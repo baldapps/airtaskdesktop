@@ -8,7 +8,18 @@
 	<description>AirTask Desktop client</description>
 	<organization>
 		<name>Marco Stornelli</name>
+		<url>https://github.com/baldapps/airtaskdesktop</url>
 	</organization>
+
+	<scm>
+		<url>https://github.com/baldapps/airtaskdesktop</url>
+		<connection>scm:git:git://github.com/baldapps/airtaskdesktop.git</connection>
+		<developerConnection>scm:git:git@github.com:baldapps/airtaskdesktop.git</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/baldapps/airtaskdesktop/issues</url>
+	</issueManagement>
 
 	<dependencies>
 		<dependency>
