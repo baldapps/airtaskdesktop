@@ -1,0 +1,40 @@
+#How to install the software
+
+You put the file airtask.jar in any folder on your pc.
+AirTask uses the multicast address 226.0.0.1 port 9879 to receive device info.
+In addition, the port 9876 and 9877 must be open in your firewall in order to
+receive files and messages. 
+
+#How to start the software
+
+Execute:
+java -jar airtask.jar <CONFIGURATION>
+
+Example:
+java -jar airtask.jar /home/user/airtask.properties
+
+#Requirements:
+1) Java JRE installed (at least 1.7)
+2) [LINUX-ONLY] The notify-send must be available on your system. If you can't run
+the command notify-send you need to install the notify-tools package for
+your GNU/Linux distribution.
+
+#Configuration
+
+#Notification timeout in milliseconds
+TIMEOUT=10000
+
+#PC name (This device name will be used to skip messages directly to other devices)
+DEVICENAME=PC
+
+#Icon path (You can set any icon you want here with absolute path) 
+ICON=/home/user/airtask.png
+
+#Clipboard command (special command for clipboard, a message that starts with this
+prefix is treated in a special way, the text is automatically copied into the
+clipboard)
+CLIPBOARDCMD=#clip#
+
+#Devices Each device must have a row called DEVICE<N> where N is a progress number
+The value are in the form name@IpAddress, for example:
+DEVICE1=mypc@10.0.1.1
