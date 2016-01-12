@@ -57,7 +57,7 @@ public class SendMessage extends javax.swing.JFrame {
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTextArea messageArea;
-	private javax.swing.JTextField targetDeviceText;
+	private javax.swing.JComboBox<String> targetDeviceText;
 	private Gson gson;
 
 	/**
@@ -114,7 +114,7 @@ public class SendMessage extends javax.swing.JFrame {
 
 		jButton1 = new javax.swing.JButton();
 		jButton2 = new javax.swing.JButton();
-		targetDeviceText = new javax.swing.JTextField();
+		targetDeviceText = new javax.swing.JComboBox<>();
 		jScrollPane1 = new javax.swing.JScrollPane();
 		messageArea = new javax.swing.JTextArea();
 		jLabel1 = new javax.swing.JLabel();
@@ -134,6 +134,10 @@ public class SendMessage extends javax.swing.JFrame {
 			}
 		});
 
+		for (String key : AirTask.ipMap.keySet()) {
+			targetDeviceText.addItem(key);
+		}
+		
 		messageArea.setColumns(20);
 		messageArea.setRows(5);
 		jScrollPane1.setViewportView(messageArea);
@@ -181,25 +185,18 @@ public class SendMessage extends javax.swing.JFrame {
 	}
 
 	private void sendFileMouseClicked(java.awt.event.MouseEvent evt) {
-		if (targetDeviceText.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(this, "You need to select a target device");
-			return;
-		}
 		final JFileChooser fc = new JFileChooser();
 		int returnVal = fc.showDialog(jButton2, "Send");
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
-			TransferManager.getInstance().sendFile(file, targetDeviceText.getText().toLowerCase().trim());
+			TransferManager.getInstance().sendFile(file,
+					((String) targetDeviceText.getSelectedItem()).toLowerCase().trim());
 		}
 	}
 
 	private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {
-		if (targetDeviceText.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(this, "You need to select a target device");
-			return;
-		}
 		String txt = messageArea.getText();
-		String to = targetDeviceText.getText();
+		String to = (String) targetDeviceText.getSelectedItem();
 		Message m = new Message();
 		m.setUserMessage(txt);
 		m.setFromDevice(AirTask.pcName);
@@ -225,6 +222,5 @@ public class SendMessage extends javax.swing.JFrame {
 			}
 		}
 		messageArea.setText("");
-		targetDeviceText.setText("");
 	}
 }
