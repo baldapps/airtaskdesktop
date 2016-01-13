@@ -1,6 +1,6 @@
 # AirTask Desktop client
 
-This library implements a color picker and a color preference for use in Android applications.
+AirTask Desktop is a java application to exchange data with the Android app AirTask. 
 
 ## Features
 
