@@ -8,10 +8,10 @@ receive files and messages.
 #How to start the software
 
 Execute:
-java -jar airtaskdesktop-<VERSION>.jar <CONFIGURATION>
+java -jar airtaskdesktop-<VERSION>-all.jar <CONFIGURATION>
 
 Example:
-java -jar airtaskdesktop-1.0.0.jar /home/user/airtask.properties
+java -jar airtaskdesktop-1.0.0-all.jar /home/user/airtask.properties
 
 #Requirements:
 1) Java JRE installed (at least 1.7)

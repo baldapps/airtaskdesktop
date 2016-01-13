@@ -10,7 +10,7 @@
         <fileSet>
             <directory>target</directory>
             <includes>
-                <include>airtaskdesktop-${project.version}.jar</include>
+                <include>airtaskdesktop-${project.version}-all.jar</include>
             </includes>
             <outputDirectory>/</outputDirectory>
         </fileSet>
