@@ -24,7 +24,7 @@ however available for the others.
 
 You just need to start the app using a shell:
 
-java -jar airtaskdesktop.jar airtask.properties
+java -jar airtaskdesktop-1.0.0.jar airtask.properties
 
 ## Configuration
 
