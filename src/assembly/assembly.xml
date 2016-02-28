@@ -56,5 +56,17 @@
             <source>${project.basedir}/src/main/resources/messageReceived.bat</source>
             <fileMode>0755</fileMode>
         </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/launch-win.bat</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/launch-osx.command</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/launch-linux</source>
+            <fileMode>0755</fileMode>
+        </file>
     </files>
 </assembly>

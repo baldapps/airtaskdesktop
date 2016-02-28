@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for entry in `ls .`; do
+   if [[ $entry =~ ^airtaskdesktop\-.*\-all\.jar ]]; then
+       java -jar $entry airtask.properties
+       exit
+   fi
+done
