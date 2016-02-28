@@ -4,7 +4,7 @@ AirTask Desktop is a java application to exchange data with the Android app AirT
 
 ## Features
 
-AirTask Desktop is a java application so it can on:
+AirTask Desktop is a java application so it can be executed on:
 
 * Windows OS
 * Max OSX
