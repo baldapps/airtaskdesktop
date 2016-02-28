@@ -1,0 +1,3 @@
+#!/bin/bash
+# From variable is in $1
+# The message is in $2

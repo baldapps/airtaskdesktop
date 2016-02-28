@@ -40,5 +40,21 @@
             <source>${project.basedir}/src/main/resources/README</source>
             <fileMode>0644</fileMode>
         </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/fileReceived</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/messageReceived</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/fileReceived.bat</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/messageReceived.bat</source>
+            <fileMode>0755</fileMode>
+        </file>
     </files>
 </assembly>

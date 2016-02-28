@@ -24,6 +24,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.balda.airtask.json.Message;
+import com.balda.airtask.script.ScriptFactory;
 import com.balda.airtask.ui.NotifierFactory;
 import com.google.gson.Gson;
 
@@ -47,8 +48,10 @@ public class TcpMsgServer extends Thread {
 			if (from.equals(AirTask.pcName))
 				return;
 			if (to != null && to.equalsIgnoreCase(AirTask.pcName)) {
+				ScriptFactory.getExecutor().onMessageReceived(from, msg);
 				NotifierFactory.getNotifier().show(msg, from);
 			} else if (to == null) {
+				ScriptFactory.getExecutor().onMessageReceived(from, msg);
 				NotifierFactory.getNotifier().show(msg, from);
 			}
 		}

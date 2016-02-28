@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.balda.airtask.script.ScriptFactory;
+
 public class TransferServer extends Thread {
 	public static final int TRANSFER_PORT = 9877;
 	private ServerSocket socket;
@@ -78,7 +80,6 @@ public class TransferServer extends Thread {
 			}
 			return;
 		}
-		@SuppressWarnings("unused")
 		String sender;
 		String fileName;
 		long len;
@@ -129,6 +130,7 @@ public class TransferServer extends Thread {
 				remaining -= read;
 				fos.write(buffer, 0, read);
 			}
+			ScriptFactory.getExecutor().onFileReceived(sender, dest.getName());
 		} catch (IOException ignored) {
 		} finally {
 			try {

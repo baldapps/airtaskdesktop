@@ -38,3 +38,9 @@ CLIPBOARDCMD=#clip#
 #Devices Each device must have a row called DEVICE<N> where N is a progress number
 The value are in the form name@IpAddress, for example:
 DEVICE1=mypc@10.0.1.1
+
+#Hook points
+When a new message or a new file is received, the application will call two
+scripts: fileReceived, messageReceived. In this script you can add any kind
+of action. The scripts receives the sender, the file name and the message. On
+Windows platform, the file with BAT extension are used.
