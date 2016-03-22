@@ -1,4 +1,4 @@
-#How to install the software
+##How to install the software##
 
 You put the file airtask.jar in any folder on your pc.
 AirTask uses the multicast address 226.0.0.1 port 9879 to receive device info.
@@ -7,9 +7,7 @@ receive files and messages.
 
 It could be needed to give execute permissions to the launch scripts. 
 
-The
-
-#How to start the software
+##How to start the software##
 
 Execute in shell script:
 java -jar airtaskdesktop-<VERSION>-all.jar <CONFIGURATION>
@@ -23,13 +21,13 @@ As alternative you can launch the scripts:
 2) launch-linux bash script if you are using GNU/Linux
 3) launch-osx.command if you are usng Max OSX
 
-#Requirements:
+##Requirements##
 1) Java JRE installed (at least 1.7)
 2) [LINUX-ONLY] The notify-send must be available on your system. If you can't run
 the command notify-send you need to install the notify-tools package for
 your GNU/Linux distribution.
 
-#Configuration
+##Configuration##
 
 #Notification timeout in milliseconds
 TIMEOUT=10000
@@ -49,7 +47,7 @@ CLIPBOARDCMD=#clip#
 The value are in the form name@IpAddress, for example:
 DEVICE1=mypc@10.0.1.1
 
-#Hook points
+##Hook points##
 When a new message or a new file is received, the application will call two
 scripts: fileReceived, messageReceived. In this script you can add any kind
 of action. The scripts receives the sender, the file name and the message. On
