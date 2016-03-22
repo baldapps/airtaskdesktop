@@ -17,7 +17,7 @@
  * along with AirTask Desktop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.balda.airtask;
+package com.balda.airtask.channels;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -27,6 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+
+import com.balda.airtask.AirTask;
 
 public class TransferClient extends Thread {
 

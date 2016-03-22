@@ -17,7 +17,7 @@
  * along with AirTask Desktop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.balda.airtask;
+package com.balda.airtask.channels;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.balda.airtask.AirTask;
 import com.balda.airtask.script.ScriptFactory;
+import com.balda.airtask.ui.NotifierFactory;
 
 public class TransferServer extends Thread {
 	public static final int TRANSFER_PORT = 9877;

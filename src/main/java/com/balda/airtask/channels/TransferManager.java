@@ -17,9 +17,11 @@
  * along with AirTask Desktop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.balda.airtask;
+package com.balda.airtask.channels;
 
 import java.io.File;
+
+import com.balda.airtask.AirTask;
 
 public class TransferManager {
 

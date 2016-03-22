@@ -40,8 +40,8 @@ import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 import com.balda.airtask.AirTask;
-import com.balda.airtask.TransferManager;
-import com.balda.airtask.TcpMsgServer;
+import com.balda.airtask.channels.TcpMsgServer;
+import com.balda.airtask.channels.TransferManager;
 import com.balda.airtask.json.Message;
 import com.google.gson.Gson;
 

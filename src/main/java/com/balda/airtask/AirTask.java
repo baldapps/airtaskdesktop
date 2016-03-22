@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import com.balda.airtask.channels.ProbeReceiver;
+import com.balda.airtask.channels.TcpMsgServer;
+import com.balda.airtask.channels.TransferServer;
 import com.balda.airtask.ui.SendMessage;
 
 public class AirTask {
