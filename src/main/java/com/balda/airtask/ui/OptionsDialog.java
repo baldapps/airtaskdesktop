@@ -35,6 +35,7 @@ import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
@@ -66,6 +67,7 @@ public class OptionsDialog extends JDialog {
 	private JTextField clipboardPrefixField;
 	private JTextField downloadPathField;
 	private JList<Device> deviceList;
+	private JCheckBox chckbxNewCheckBox;
 	private DefaultListModel<Device> listModel;
 
 	private class DeviceRenderer extends JLabel implements ListCellRenderer<Device> {
@@ -77,15 +79,18 @@ public class OptionsDialog extends JDialog {
 		@Override
 		public Component getListCellRendererComponent(JList<? extends Device> list, Device d, int index,
 				boolean isSelected, boolean cellHasFocus) {
-			setText(d.getName() + "@" + d.getAddress());
+			if (d.isDefault())
+				setText(d.getName() + "@" + d.getAddress() + " (default)");
+			else
+				setText(d.getName() + "@" + d.getAddress());
 			if (isSelected) {
-                setBackground(Color.blue);
-                setForeground(Color.white);
-            } else {
-                setBackground(Color.white);
-                setForeground(list.getForeground());
-            }
-            setOpaque(true);
+				setBackground(Color.blue);
+				setForeground(Color.white);
+			} else {
+				setBackground(Color.white);
+				setForeground(list.getForeground());
+			}
+			setOpaque(true);
 			return this;
 		}
 	}
@@ -94,7 +99,7 @@ public class OptionsDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public OptionsDialog() {
-		setBounds(100, 100, 480, 410);
+		setBounds(100, 100, 480, 450);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle("Options");
 		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
@@ -172,6 +177,7 @@ public class OptionsDialog extends JDialog {
 
 		JButton addDeviceBtn = new JButton("Add device");
 		addDeviceBtn.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				DeviceDialog dialog = new DeviceDialog();
 				Device device = dialog.showDialog();
@@ -186,17 +192,19 @@ public class OptionsDialog extends JDialog {
 
 		JButton removeDeviceBtn = new JButton("Remove device");
 		removeDeviceBtn.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = deviceList.getSelectedIndex();
 				listModel.remove(index);
 			}
 		});
 		removeDeviceBtn.setFont(new Font("Dialog", Font.BOLD, 10));
-		removeDeviceBtn.setBounds(339, 309, 129, 25);
+		removeDeviceBtn.setBounds(339, 280, 129, 25);
 		contentPanel.add(removeDeviceBtn);
 
 		final JButton selectPathBtn = new JButton("Select path");
 		selectPathBtn.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				final JFileChooser fc = new JFileChooser();
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -212,6 +220,7 @@ public class OptionsDialog extends JDialog {
 
 		final JButton selectIconBtn = new JButton("Select icon");
 		selectIconBtn.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				final JFileChooser fc = new JFileChooser();
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -227,6 +236,21 @@ public class OptionsDialog extends JDialog {
 		});
 		selectIconBtn.setBounds(339, 115, 129, 25);
 		contentPanel.add(selectIconBtn);
+
+		JButton btnNewButton = new JButton("Set as default");
+		btnNewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				setAsDefault(deviceList.getSelectedValue());
+			}
+		});
+		btnNewButton.setFont(new Font("Dialog", Font.BOLD, 11));
+		btnNewButton.setBounds(339, 309, 129, 25);
+		contentPanel.add(btnNewButton);
+
+		chckbxNewCheckBox = new JCheckBox("Sync clipboard with default device");
+		chckbxNewCheckBox.setBounds(24, 342, 303, 23);
+		contentPanel.add(chckbxNewCheckBox);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -234,6 +258,7 @@ public class OptionsDialog extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						if (onExit()) {
 							setVisible(false);
@@ -248,6 +273,7 @@ public class OptionsDialog extends JDialog {
 			{
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						setVisible(false);
 						dispose();
@@ -263,6 +289,7 @@ public class OptionsDialog extends JDialog {
 	private void init() {
 		Settings s = Settings.getInstance();
 
+		chckbxNewCheckBox.setSelected(s.syncClipboard());
 		timeoutField.setText(Integer.toString(s.getTimeout()));
 		downloadPathField.setText(s.getDownloadPath());
 		iconField.setText(s.getIconPath());
@@ -273,6 +300,20 @@ public class OptionsDialog extends JDialog {
 		for (Device d : list) {
 			listModel.addElement(d);
 		}
+	}
+
+	private void setAsDefault(Device d) {
+		Settings s = Settings.getInstance();
+		List<Device> devices = s.getDevices();
+		listModel.clear();
+		for (Device dev : devices) {
+			if (dev.equals(d))
+				dev.setDefault(true);
+			else
+				dev.setDefault(false);
+			listModel.addElement(dev);
+		}
+		s.setDevices(devices);
 	}
 
 	private boolean onExit() {
@@ -304,6 +345,7 @@ public class OptionsDialog extends JDialog {
 		for (int i = 0; i < size; i++) {
 			list.add(listModel.getElementAt(i));
 		}
+		s.setSyncClipboard(chckbxNewCheckBox.isSelected());
 		s.setDevices(list);
 		s.setClipboardPrefix(clipboardPrefixField.getText());
 		s.setDownloadPath(downloadPathField.getText());

@@ -23,10 +23,12 @@ public class Device {
 
 	private String name;
 	private String address;
+	private boolean def;
 
-	public Device(String n, String addr) {
+	public Device(String n, String addr, boolean df) {
 		name = n;
 		address = addr;
+		def = df;
 	}
 
 	public String getName() {
@@ -37,6 +39,14 @@ public class Device {
 		this.name = name;
 	}
 
+	public boolean isDefault() {
+		return def;
+	}
+
+	public void setDefault(boolean d) {
+		def = d;
+	}
+
 	public String getAddress() {
 		return address;
 	}
@@ -45,7 +55,32 @@ public class Device {
 		this.address = address;
 	}
 
+	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!Device.class.isAssignableFrom(obj.getClass())) {
+			return false;
+		}
+		final Device other = (Device) obj;
+		if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+			return false;
+		}
+		if (!name.equals(other.name)) {
+			return false;
+		}
+		if ((this.address == null) ? (other.address != null) : !this.address.equals(other.address)) {
+			return false;
+		}
+		if (!address.equals(other.address)) {
+			return false;
+		}
+		return true;
 	}
 }

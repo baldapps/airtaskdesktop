@@ -113,6 +113,7 @@ public class AirTask {
 			}
 		});
 
+		ClipboardListener.getInstance().init();
 		TcpMsgServer s;
 		s = new TcpMsgServer();
 		s.start();

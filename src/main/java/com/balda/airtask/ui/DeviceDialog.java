@@ -95,9 +95,10 @@ public class DeviceDialog extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						if (validate(addressField.getText())) {
-							device = new Device(deviceNameField.getText(), addressField.getText());
+							device = new Device(deviceNameField.getText(), addressField.getText(), false);
 							setVisible(false);
 							dispose();
 						} else {
@@ -112,6 +113,7 @@ public class DeviceDialog extends JDialog {
 			{
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent e) {
 						setVisible(false);
 						dispose();

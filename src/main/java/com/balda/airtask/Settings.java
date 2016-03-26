@@ -34,6 +34,7 @@ public class Settings {
 	public static final String DEVICES = "devices";
 	public static final String CLIPBOARD = "clipboard";
 	public static final String SHOW_NOTIFICATIONS = "shownotificatios";
+	public static final String SYNC_CLIPBOARD = "sync_clipboard";
 
 	public static final int DEF_TIMEOUT = 10000;
 	public static final String DEF_NAME = "pc";
@@ -41,9 +42,10 @@ public class Settings {
 	public static final String DEF_ICONPATH = System.getProperty("user.dir") + "/airtask.png";
 	public static final String DEF_CLIPBOARD = "#clip#";
 	public static final boolean DEF_SHOW = true;
+	public static final boolean DEF_SYNC_CLIPBOARD = false;
 	private Preferences prefs = Preferences.userNodeForPackage(getClass());
 
-	private static Settings instance = new Settings();
+	private static final Settings instance = new Settings();
 
 	private Settings() {
 	}
@@ -52,30 +54,38 @@ public class Settings {
 		return instance;
 	}
 
+	public boolean syncClipboard() {
+		return prefs.getBoolean(SYNC_CLIPBOARD, DEF_SYNC_CLIPBOARD);
+	}
+
+	public void setSyncClipboard(boolean sync) {
+		prefs.putBoolean(SYNC_CLIPBOARD, sync);
+	}
+
 	public boolean showNotifications() {
 		return prefs.getBoolean(SHOW_NOTIFICATIONS, DEF_SHOW);
 	}
-	
+
 	public int getTimeout() {
 		return prefs.getInt(TIMEOUT, DEF_TIMEOUT);
 	}
-	
+
 	public String getName() {
 		return prefs.get(NAME, DEF_NAME);
 	}
-	
+
 	public String getDownloadPath() {
 		return prefs.get(DOWNLOADPATH, DEF_DOWNLOADPATH);
 	}
-	
+
 	public String getIconPath() {
 		return prefs.get(ICONPATH, DEF_ICONPATH);
 	}
-	
+
 	public String getClipboardPrefix() {
 		return prefs.get(CLIPBOARD, DEF_CLIPBOARD);
 	}
-	
+
 	public List<Device> getDevices() {
 		String list = prefs.get(DEVICES, null);
 		if (list == null)
@@ -85,12 +95,14 @@ public class Settings {
 		for (String d : tokens) {
 			String[] devInfo = d.split("@");
 			if (devInfo.length == 2) {
-				devices.add(new Device(devInfo[0], devInfo[1]));
+				devices.add(new Device(devInfo[0], devInfo[1], false));
+			} else if (devInfo.length == 3) {
+				devices.add(new Device(devInfo[0], devInfo[1], Boolean.valueOf(devInfo[2])));
 			}
 		}
 		return devices;
 	}
-	
+
 	public void setTimeout(int timeout) {
 		prefs.putInt(TIMEOUT, timeout);
 	}
@@ -102,15 +114,15 @@ public class Settings {
 	public void setDownloadPath(String path) {
 		prefs.put(DOWNLOADPATH, path);
 	}
-	
+
 	public void setIconPath(String path) {
 		prefs.put(ICONPATH, path);
 	}
-	
+
 	public void setClipboardPrefix(String prefix) {
 		prefs.put(CLIPBOARD, prefix);
 	}
-	
+
 	public void setDevices(List<Device> list) {
 		if (list.size() == 0) {
 			prefs.remove(DEVICES);
@@ -121,19 +133,23 @@ public class Settings {
 			b.append(d.getName());
 			b.append("@");
 			b.append(d.getAddress());
+			if (d.isDefault()) {
+				b.append("@");
+				b.append(d.isDefault());
+			}
 			b.append(";");
 		}
 		prefs.put(DEVICES, b.substring(0, b.length() - 1));
 	}
-	
+
 	public void setShowNotifications(boolean show) {
 		prefs.putBoolean(SHOW_NOTIFICATIONS, show);
 	}
-	
+
 	public void addListener(PreferenceChangeListener pcl) {
 		prefs.addPreferenceChangeListener(pcl);
 	}
-	
+
 	public void removeListener(PreferenceChangeListener pcl) {
 		prefs.removePreferenceChangeListener(pcl);
 	}
