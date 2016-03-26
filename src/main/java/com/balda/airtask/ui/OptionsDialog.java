@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -97,8 +98,11 @@ public class OptionsDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public OptionsDialog() {
-		setBounds(100, 100, 480, 360);
+		setBounds(100, 100, 480, 410);
 		setModalityType(ModalityType.APPLICATION_MODAL);
+		setTitle("Options");
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
+		setIconImage(icon.getImage());
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -117,48 +121,48 @@ public class OptionsDialog extends JDialog {
 		formatter.setAllowsInvalid(true);
 		formatter.setCommitsOnValidEdit(false);
 		timeoutField = new JFormattedTextField(formatter);
-		timeoutField.setBounds(24, 25, 303, 19);
+		timeoutField.setBounds(24, 25, 303, 25);
 		contentPanel.add(timeoutField);
 		timeoutField.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("Pc name");
-		lblNewLabel_1.setBounds(24, 45, 70, 15);
+		lblNewLabel_1.setBounds(24, 55, 70, 15);
 		contentPanel.add(lblNewLabel_1);
 
 		pcNameField = new JTextField();
-		pcNameField.setBounds(24, 60, 303, 19);
+		pcNameField.setBounds(24, 71, 303, 25);
 		contentPanel.add(pcNameField);
 		pcNameField.setColumns(10);
 
 		JLabel lblNewLabel_2 = new JLabel("Icon");
-		lblNewLabel_2.setBounds(24, 80, 70, 15);
+		lblNewLabel_2.setBounds(24, 100, 70, 15);
 		contentPanel.add(lblNewLabel_2);
 
 		iconField = new JTextField();
-		iconField.setBounds(24, 95, 303, 19);
+		iconField.setBounds(24, 115, 303, 25);
 		contentPanel.add(iconField);
 		iconField.setColumns(10);
 
 		JLabel lblNewLabel_3 = new JLabel("Clipboard command prefix");
-		lblNewLabel_3.setBounds(24, 115, 303, 15);
+		lblNewLabel_3.setBounds(24, 145, 303, 15);
 		contentPanel.add(lblNewLabel_3);
 
 		clipboardPrefixField = new JTextField();
-		clipboardPrefixField.setBounds(24, 130, 303, 19);
+		clipboardPrefixField.setBounds(24, 160, 303, 25);
 		contentPanel.add(clipboardPrefixField);
 		clipboardPrefixField.setColumns(10);
 
 		JLabel lblNewLabel_4 = new JLabel("Download path");
-		lblNewLabel_4.setBounds(24, 150, 303, 15);
+		lblNewLabel_4.setBounds(24, 190, 303, 15);
 		contentPanel.add(lblNewLabel_4);
 
 		downloadPathField = new JTextField();
-		downloadPathField.setBounds(24, 165, 303, 19);
+		downloadPathField.setBounds(24, 205, 303, 25);
 		contentPanel.add(downloadPathField);
 		downloadPathField.setColumns(10);
 
 		JLabel lblNewLabel_5 = new JLabel("Devices");
-		lblNewLabel_5.setBounds(24, 190, 70, 15);
+		lblNewLabel_5.setBounds(24, 235, 70, 15);
 		contentPanel.add(lblNewLabel_5);
 
 		deviceList = new JList<>();
@@ -167,7 +171,7 @@ public class OptionsDialog extends JDialog {
 		deviceList.setModel(listModel);
 		deviceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		deviceList.setLayoutOrientation(JList.VERTICAL_WRAP);
-		deviceList.setBounds(24, 206, 303, 65);
+		deviceList.setBounds(24, 250, 303, 84);
 		contentPanel.add(deviceList);
 
 		JButton addDeviceBtn = new JButton("Add device");
@@ -181,7 +185,7 @@ public class OptionsDialog extends JDialog {
 			}
 		});
 		addDeviceBtn.setFont(new Font("Dialog", Font.BOLD, 10));
-		addDeviceBtn.setBounds(339, 206, 129, 25);
+		addDeviceBtn.setBounds(339, 250, 129, 25);
 		contentPanel.add(addDeviceBtn);
 
 		JButton removeDeviceBtn = new JButton("Remove device");
@@ -192,7 +196,7 @@ public class OptionsDialog extends JDialog {
 			}
 		});
 		removeDeviceBtn.setFont(new Font("Dialog", Font.BOLD, 10));
-		removeDeviceBtn.setBounds(339, 246, 129, 25);
+		removeDeviceBtn.setBounds(339, 309, 129, 25);
 		contentPanel.add(removeDeviceBtn);
 
 		final JButton selectPathBtn = new JButton("Select path");
@@ -207,7 +211,7 @@ public class OptionsDialog extends JDialog {
 				}
 			}
 		});
-		selectPathBtn.setBounds(339, 165, 129, 19);
+		selectPathBtn.setBounds(339, 205, 129, 25);
 		contentPanel.add(selectPathBtn);
 
 		final JButton selectIconBtn = new JButton("Select icon");
@@ -225,7 +229,7 @@ public class OptionsDialog extends JDialog {
 				}
 			}
 		});
-		selectIconBtn.setBounds(339, 95, 129, 19);
+		selectIconBtn.setBounds(339, 115, 129, 25);
 		contentPanel.add(selectIconBtn);
 		{
 			JPanel buttonPane = new JPanel();

@@ -40,6 +40,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import com.balda.airtask.Device;
@@ -124,7 +125,6 @@ public class SendMessage extends javax.swing.JFrame {
 		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 		setupTray();
 
-		//Build the first menu.
 		JMenu menu = new JMenu("Options");
 		JMenuItem menuItem = new JMenuItem("Options");
 		menuItem.addActionListener(new ActionListener() {
@@ -133,10 +133,12 @@ public class SendMessage extends javax.swing.JFrame {
 				odiag.setVisible(true);
 			}
 		});
+		menu.setMnemonic(KeyEvent.VK_O);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
 		menu.add(menuItem);
 		menuBar.add(menu);
 		setJMenuBar(menuBar);
-		
+
 		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
 		setIconImage(icon.getImage());
 		setTitle("AirTask");

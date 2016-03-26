@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -71,6 +72,9 @@ public class DeviceDialog extends JDialog {
 	public DeviceDialog() {
 		setBounds(100, 100, 330, 130);
 		setModalityType(ModalityType.APPLICATION_MODAL);
+		setTitle("Add device");
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
+		setIconImage(icon.getImage());
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -82,7 +86,7 @@ public class DeviceDialog extends JDialog {
 		}
 		{
 			addressField = new JTextField();
-			addressField.setBounds(105, 37, 208, 19);
+			addressField.setBounds(105, 37, 208, 25);
 			contentPanel.add(addressField);
 			addressField.setColumns(10);
 		}
@@ -94,7 +98,7 @@ public class DeviceDialog extends JDialog {
 		{
 			deviceNameField = new JTextField();
 			deviceNameField.setColumns(10);
-			deviceNameField.setBounds(105, 10, 208, 19);
+			deviceNameField.setBounds(105, 10, 208, 25);
 			contentPanel.add(deviceNameField);
 		}
 		{
@@ -120,6 +124,12 @@ public class DeviceDialog extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						setVisible(false);
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
