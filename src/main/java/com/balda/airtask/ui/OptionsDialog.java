@@ -20,6 +20,7 @@
 package com.balda.airtask.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -66,19 +67,27 @@ public class OptionsDialog extends JDialog {
 	private JTextField downloadPathField;
 	private JList<Device> deviceList;
 	private DefaultListModel<Device> listModel;
-	
+
 	private class DeviceRenderer extends JLabel implements ListCellRenderer<Device> {
-	    /**
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -951398425178262012L;
 
 		@Override
-	    public Component getListCellRendererComponent(JList<? extends Device> list, Device d, int index,
-	        boolean isSelected, boolean cellHasFocus) {
-	        setText(d.getName()+"@"+d.getAddress());	         
-	        return this;
-	    }	     
+		public Component getListCellRendererComponent(JList<? extends Device> list, Device d, int index,
+				boolean isSelected, boolean cellHasFocus) {
+			setText(d.getName() + "@" + d.getAddress());
+			if (isSelected) {
+                setBackground(Color.blue);
+                setForeground(Color.white);
+            } else {
+                setBackground(Color.white);
+                setForeground(list.getForeground());
+            }
+            setOpaque(true);
+			return this;
+		}
 	}
 
 	/**
@@ -252,8 +261,8 @@ public class OptionsDialog extends JDialog {
 	}
 
 	private void init() {
-		Settings s = Settings.getInstance();		
-		
+		Settings s = Settings.getInstance();
+
 		timeoutField.setText(Integer.toString(s.getTimeout()));
 		downloadPathField.setText(s.getDownloadPath());
 		iconField.setText(s.getIconPath());
@@ -268,12 +277,13 @@ public class OptionsDialog extends JDialog {
 
 	private boolean onExit() {
 		int time = 0;
-		Settings s = Settings.getInstance();		
-		
+		Settings s = Settings.getInstance();
+
 		try {
 			time = Integer.parseInt(timeoutField.getText());
 		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Timeout parameter must be a number between 1000 and 60000 milliseconds");
+			JOptionPane.showMessageDialog(this,
+					"Timeout parameter must be a number between 1000 and 60000 milliseconds");
 			return false;
 		}
 
