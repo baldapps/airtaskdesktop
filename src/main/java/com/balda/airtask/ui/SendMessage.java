@@ -33,6 +33,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -47,7 +49,7 @@ import com.balda.airtask.Device;
 import com.balda.airtask.Settings;
 import com.balda.airtask.channels.TransferManager;
 
-public class SendMessage extends javax.swing.JFrame {
+public class SendMessage extends javax.swing.JFrame implements PreferenceChangeListener {
 
 	/**
 	 * 
@@ -67,6 +69,7 @@ public class SendMessage extends javax.swing.JFrame {
 	 */
 	public SendMessage() {
 		initComponents();
+		Settings.getInstance().addListener(this);
 	}
 
 	public Image imageForTray(SystemTray theTray) {
@@ -222,5 +225,16 @@ public class SendMessage extends javax.swing.JFrame {
 		}
 		if (!failed)
 			messageArea.setText("");
+	}
+
+	@Override
+	public void preferenceChange(PreferenceChangeEvent evt) {
+		if (evt.getKey().equals(Settings.DEVICES)) {
+			targetDeviceText.removeAllItems();
+			List<Device> devices = Settings.getInstance().getDevices();
+			for (Device d : devices) {
+				targetDeviceText.addItem(d);
+			}
+		}
 	}
 }

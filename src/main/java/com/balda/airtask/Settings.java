@@ -22,6 +22,7 @@ package com.balda.airtask;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
 public class Settings {
@@ -111,9 +112,19 @@ public class Settings {
 		}
 		StringBuilder b = new StringBuilder();
 		for (Device d : list) {
-			b.append(d.toString());
+			b.append(d.getName());
+			b.append("@");
+			b.append(d.getAddress());
 			b.append(";");
 		}
 		prefs.put(DEVICES, b.substring(0, b.length() - 1));
+	}
+	
+	public void addListener(PreferenceChangeListener pcl) {
+		prefs.addPreferenceChangeListener(pcl);
+	}
+	
+	public void removeListener(PreferenceChangeListener pcl) {
+		prefs.removePreferenceChangeListener(pcl);
 	}
 }

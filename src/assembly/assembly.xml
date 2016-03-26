@@ -25,10 +25,6 @@
             <fileMode>0644</fileMode>
         </file>
         <file>
-            <source>${project.basedir}/src/main/resources/airtask.properties</source>
-            <fileMode>0644</fileMode>
-        </file>
-        <file>
             <source>${project.basedir}/src/main/resources/APACHELIC</source>
             <fileMode>0644</fileMode>
         </file>

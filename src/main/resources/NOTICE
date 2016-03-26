@@ -4,6 +4,10 @@ GSON library - Copyright 2008 Google Inc. covered by Apache
 License 2.0 (See APACHELIC file)
 (Link https://github.com/google/gson)
 
+Arg4j library - Copyright Kohsuke Kawaguchi
+MIT License
+(Link https://github.com/kohsuke/args4j)
+
 This software contains code derived from:
 
 JToaster - Copyright Daniele Piras covered by Apache
