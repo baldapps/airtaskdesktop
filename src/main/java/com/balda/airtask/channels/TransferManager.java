@@ -19,15 +19,24 @@
 
 package com.balda.airtask.channels;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import com.balda.airtask.Device;
+import com.balda.airtask.Settings;
+import com.balda.airtask.json.Message;
+import com.google.gson.Gson;
 
 public class TransferManager {
 
+	private Gson gson;
 	private static TransferManager instance = new TransferManager();
 
 	private TransferManager() {
+		gson = new Gson();
 	}
 
 	public static TransferManager getInstance() {
@@ -40,5 +49,26 @@ public class TransferManager {
 		req.setFile(f.getAbsolutePath());
 		req.setIp(target.getAddress());
 		new TransferClient(req).start();
+	}
+
+	public void sendMessage(String msg, Device device) throws IOException {
+		Message m = new Message();
+		m.setUserMessage(msg);
+		m.setFromDevice(Settings.getInstance().getName());
+		m.setTargetDevice(device.getName().toLowerCase().trim());
+		Socket socket;
+		socket = new Socket(device.getName().toLowerCase().trim(), TcpMsgServer.PORT);
+		try {
+			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+			dos.writeUTF(gson.toJson(m));
+		} catch (IOException e) {
+			throw new IOException(e);
+		} finally {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

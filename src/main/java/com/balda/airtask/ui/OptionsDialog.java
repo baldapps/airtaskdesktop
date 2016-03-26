@@ -98,6 +98,7 @@ public class OptionsDialog extends JDialog {
 	 */
 	public OptionsDialog() {
 		setBounds(100, 100, 480, 360);
+		setModalityType(ModalityType.APPLICATION_MODAL);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

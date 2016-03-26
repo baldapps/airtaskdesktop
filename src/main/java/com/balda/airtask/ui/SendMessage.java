@@ -29,23 +29,22 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataOutputStream;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 import com.balda.airtask.Device;
 import com.balda.airtask.Settings;
-import com.balda.airtask.channels.TcpMsgServer;
 import com.balda.airtask.channels.TransferManager;
-import com.balda.airtask.json.Message;
-import com.google.gson.Gson;
 
 public class SendMessage extends javax.swing.JFrame {
 
@@ -60,14 +59,13 @@ public class SendMessage extends javax.swing.JFrame {
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTextArea messageArea;
 	private javax.swing.JComboBox<Device> targetDeviceText;
-	private Gson gson;
+	private JMenuBar menuBar;
 
 	/**
 	 * Creates new form SendMessage
 	 */
 	public SendMessage() {
 		initComponents();
-		gson = new Gson();
 	}
 
 	public Image imageForTray(SystemTray theTray) {
@@ -121,10 +119,24 @@ public class SendMessage extends javax.swing.JFrame {
 		messageArea = new javax.swing.JTextArea();
 		jLabel1 = new javax.swing.JLabel();
 		jLabel2 = new javax.swing.JLabel();
+		menuBar = new JMenuBar();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 		setupTray();
 
+		//Build the first menu.
+		JMenu menu = new JMenu("Options");
+		JMenuItem menuItem = new JMenuItem("Options");
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				OptionsDialog odiag = new OptionsDialog();
+				odiag.setVisible(true);
+			}
+		});
+		menu.add(menuItem);
+		menuBar.add(menu);
+		setJMenuBar(menuBar);
+		
 		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
 		setIconImage(icon.getImage());
 		setTitle("AirTask");
@@ -132,7 +144,7 @@ public class SendMessage extends javax.swing.JFrame {
 		jButton1.setText("Send");
 		jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				jButton1MouseClicked(evt);
+				sendMessageMouseClicked(evt);
 			}
 		});
 
@@ -140,7 +152,7 @@ public class SendMessage extends javax.swing.JFrame {
 		for (Device d : devices) {
 			targetDeviceText.addItem(d);
 		}
-		
+
 		messageArea.setColumns(20);
 		messageArea.setRows(5);
 		jScrollPane1.setViewportView(messageArea);
@@ -196,32 +208,17 @@ public class SendMessage extends javax.swing.JFrame {
 		}
 	}
 
-	private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {
+	private void sendMessageMouseClicked(java.awt.event.MouseEvent evt) {
 		String txt = messageArea.getText();
 		Device device = (Device) targetDeviceText.getSelectedItem();
-		Message m = new Message();
-		m.setUserMessage(txt);
-		m.setFromDevice(Settings.getInstance().getName());
-		m.setTargetDevice(device.getName().toLowerCase().trim());
-		Socket socket;
+		boolean failed = false;
 		try {
-			socket = new Socket(device.getName().toLowerCase().trim(), TcpMsgServer.PORT);
+			TransferManager.getInstance().sendMessage(txt, device);
 		} catch (IOException e) {
+			failed = true;
 			JOptionPane.showMessageDialog(this, "Impossible to send the message: " + e.getMessage());
-			return;
 		}
-		try {
-			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-			dos.writeUTF(gson.toJson(m));
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, "Impossible to send the message: " + e.getMessage());
-		} finally {
-			try {
-				socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		messageArea.setText("");
+		if (!failed)
+			messageArea.setText("");
 	}
 }
