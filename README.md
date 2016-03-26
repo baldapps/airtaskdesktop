@@ -28,8 +28,7 @@ java -jar airtaskdesktop-[VERSION]-all.jar
 
 ## Configuration
 
-All configuration parameters are in airtask.properties file. See the README file for
-a detailed explanation.
+See the README file for a detailed explanation.
 
 ## Bugs
 
