@@ -26,7 +26,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
+
+import javax.swing.JOptionPane;
 
 import com.balda.airtask.Settings;
 
@@ -38,17 +42,47 @@ public class TransferClient extends Thread {
 		req = r;
 	}
 
+	private void showError(final String msg) {
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(null, msg);
+			}
+		});
+	}
+
 	@Override
 	public void run() {
 		byte[] tmp = new byte[4096];
 		int n;
-		Socket sock;
+		File myFile = new File(req.getFile());
+		Socket sock = new Socket();
 		try {
-			sock = new Socket(req.getIp(), TransferServer.TRANSFER_PORT);
-		} catch (IOException e) {
+			sock.setSoTimeout(5000);
+		} catch (SocketException e) {
+			if (req.isDeleteOnExit()) {
+				myFile.delete();
+			}
+			try {
+				sock.close();
+			} catch (IOException ignored) {
+			}
+			showError(e.getMessage());
 			return;
 		}
-		File myFile = new File(req.getFile());
+		try {
+			sock.connect(new InetSocketAddress(req.getIp(), TransferServer.TRANSFER_PORT), 5000);
+		} catch (IOException e) {
+			if (req.isDeleteOnExit()) {
+				myFile.delete();
+			}
+			try {
+				sock.close();
+			} catch (IOException ignored) {
+			}
+			showError(e.getMessage());
+			return;
+		}
 		long fileSize = myFile.length();
 		FileInputStream fis;
 		try {
@@ -58,6 +92,10 @@ public class TransferClient extends Thread {
 				sock.close();
 			} catch (IOException ignored) {
 			}
+			if (req.isDeleteOnExit()) {
+				myFile.delete();
+			}
+			showError(e.getMessage());
 			return;
 		}
 		DataInputStream bis = new DataInputStream(fis);
@@ -73,6 +111,10 @@ public class TransferClient extends Thread {
 				sock.close();
 			} catch (IOException ignored) {
 			}
+			if (req.isDeleteOnExit()) {
+				myFile.delete();
+			}
+			showError(e.getMessage());
 			return;
 		}
 		DataOutputStream dos = new DataOutputStream(os);
@@ -84,7 +126,8 @@ public class TransferClient extends Thread {
 				os.write(tmp, 0, n);
 				fileSize -= n;
 			}
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			showError(e.getMessage());
 		} finally {
 			try {
 				os.flush();
@@ -94,6 +137,9 @@ public class TransferClient extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		if (req.isDeleteOnExit()) {
+			myFile.delete();
 		}
 	}
 }

@@ -28,23 +28,35 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
@@ -58,13 +70,14 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 	 * 
 	 */
 	private static final long serialVersionUID = 2860961241099827670L;
-	private javax.swing.JButton jButton1;
-	private javax.swing.JButton jButton2;
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JLabel jLabel2;
-	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JTextArea messageArea;
-	private javax.swing.JComboBox<Device> targetDeviceText;
+	private JButton jButton1;
+	private JButton jButton2;
+	private JButton jButton3;
+	private JLabel jLabel1;
+	private JLabel jLabel2;
+	private JScrollPane jScrollPane1;
+	private JTextArea messageArea;
+	private JComboBox<Device> targetDeviceText;
 	private JMenuBar menuBar;
 
 	/**
@@ -97,7 +110,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				Settings.getInstance().setShowNotifications(!Settings.getInstance().showNotifications());
-			}		
+			}
 		});
 
 		MenuItem item1 = new MenuItem("Open");
@@ -130,13 +143,14 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 
 	private void initComponents() {
 
-		jButton1 = new javax.swing.JButton();
-		jButton2 = new javax.swing.JButton();
-		targetDeviceText = new javax.swing.JComboBox<>();
-		jScrollPane1 = new javax.swing.JScrollPane();
-		messageArea = new javax.swing.JTextArea();
-		jLabel1 = new javax.swing.JLabel();
-		jLabel2 = new javax.swing.JLabel();
+		jButton1 = new JButton();
+		jButton2 = new JButton();
+		jButton3 = new JButton();
+		targetDeviceText = new JComboBox<>();
+		jScrollPane1 = new JScrollPane();
+		messageArea = new JTextArea();
+		jLabel1 = new JLabel();
+		jLabel2 = new JLabel();
 		menuBar = new JMenuBar();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -145,6 +159,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 		JMenu menu = new JMenu("Options");
 		JMenuItem menuItem = new JMenuItem("Options");
 		menuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				OptionsDialog odiag = new OptionsDialog();
 				odiag.setVisible(true);
@@ -162,6 +177,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 
 		jButton1.setText("Send");
 		jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				sendMessageMouseClicked(evt);
 			}
@@ -182,25 +198,38 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 
 		jButton2.setText("Send File");
 		jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				sendFileMouseClicked(evt);
+			}
+		});
+
+		jButton3.setText("Send clipboard");
+		jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				sendClipboardMouseClicked(evt);
 			}
 		});
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout
-						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(targetDeviceText)
-						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-								layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE).addComponent(jButton2)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jButton1))
-						.addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jLabel1).addComponent(jLabel2))
-								.addGap(0, 0, Short.MAX_VALUE)))
+				.addGroup(layout.createSequentialGroup().addContainerGap()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(targetDeviceText)
+								.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+								.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+										layout.createSequentialGroup().addComponent(jButton3)
+												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(jButton2)
+												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(jButton1))
+								.addGroup(layout.createSequentialGroup()
+										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+												.addComponent(jLabel1).addComponent(jLabel2))
+										.addGap(0, 0, Short.MAX_VALUE)))
 						.addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
 				javax.swing.GroupLayout.Alignment.TRAILING,
@@ -213,17 +242,85 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jButton1).addComponent(jButton2))
+								.addComponent(jButton1).addComponent(jButton2).addComponent(jButton3))
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		pack();
 	}
 
-	private void sendFileMouseClicked(java.awt.event.MouseEvent evt) {
+	private void sendFileMouseClicked(MouseEvent evt) {
 		final JFileChooser fc = new JFileChooser();
 		int returnVal = fc.showDialog(jButton2, "Send");
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
-			TransferManager.getInstance().sendFile(file, (Device) targetDeviceText.getSelectedItem());
+			TransferManager.getInstance().sendFile(file, (Device) targetDeviceText.getSelectedItem(), false);
+		}
+	}
+
+	private void sendClipboardMouseClicked(MouseEvent evt) {
+		Device device = (Device) targetDeviceText.getSelectedItem();
+		Transferable transferable;
+		try {
+			transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+		} catch (IllegalStateException e) {
+			JOptionPane.showMessageDialog(this, "Impossible to send the message: clipboard not available");
+			return;
+		}
+		if (transferable == null) {
+			JOptionPane.showMessageDialog(this, "Clipboard is empty");
+			return;
+		}
+		String lastErr = null;
+		DataFlavor[] dataFlavors = transferable.getTransferDataFlavors();
+		for (int count = 0; count < dataFlavors.length; count++) {
+			if (DataFlavor.stringFlavor == dataFlavors[count]) {
+				Object object;
+				try {
+					object = transferable.getTransferData(dataFlavors[count]);
+				} catch (UnsupportedFlavorException | IOException e) {
+					continue;
+				}
+				if (object instanceof String) {
+					try {
+						TransferManager.getInstance()
+								.sendMessage(Settings.getInstance().getClipboardPrefix() + object.toString(), device);
+					} catch (IOException e) {
+						lastErr = e.getMessage();
+					}
+				}
+			} else {
+				Object object;
+				try {
+					object = transferable.getTransferData(dataFlavors[count]);
+				} catch (UnsupportedFlavorException | IOException e) {
+					continue;
+				}
+				if (object instanceof Image) {
+					BufferedImage image = (BufferedImage) object;
+					File f = new File(Settings.getInstance().getDownloadPath() + "/" + UUID.randomUUID() + ".png");
+					try {
+						ImageIO.write(image, "png", f);
+					} catch (IOException e) {
+						lastErr = e.getMessage();
+						continue;
+					}
+					TransferManager.getInstance().sendFile(f, device, true);
+				} else if (object instanceof List) {
+					@SuppressWarnings("unchecked")
+					List<File> selectedFileList = (List<File>) object;
+					int size = selectedFileList.size();
+					for (int index = 0; index < size; index++) {
+						File file = selectedFileList.get(index);
+						if (!file.isDirectory()) {
+							TransferManager.getInstance().sendFile(file, device, false);
+						} else {
+							lastErr = "Directory transfer is not supported";
+						}
+					}
+				}
+			}
+		}
+		if (lastErr != null) {
+			JOptionPane.showMessageDialog(this, "An error occured during transfer: " + lastErr);
 		}
 	}
 

@@ -48,12 +48,13 @@ public class AirTask {
 			System.exit(1);
 			return;
 		}
-		if (params.getDevice() != null) {		
+		if (params.getDevice() != null) {
 			if (params.getFile() != null) {
 				File file = new File(params.getFile());
 				List<Device> devices = Settings.getInstance().getDevices();
 				if (devices.contains(params.getDevice())) {
-					TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(params.getDevice())));
+					TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(params.getDevice())),
+							false);
 				} else {
 					System.err.println("Device not found");
 					System.exit(1);
@@ -106,6 +107,7 @@ public class AirTask {
 
 		/* Create the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				form = new SendMessage();
 			}

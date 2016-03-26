@@ -22,8 +22,8 @@ package com.balda.airtask.channels;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import com.balda.airtask.Device;
 import com.balda.airtask.Settings;
@@ -43,11 +43,12 @@ public class TransferManager {
 		return instance;
 	}
 
-	public void sendFile(File f, Device target) {
+	public void sendFile(File f, Device target, boolean delete) {
 		TransferRequest req = new TransferRequest();
 		req.setDestination(target.getName().toLowerCase().trim());
 		req.setFile(f.getAbsolutePath());
 		req.setIp(target.getAddress());
+		req.setDeleteOnExit(delete);
 		new TransferClient(req).start();
 	}
 
@@ -56,9 +57,10 @@ public class TransferManager {
 		m.setUserMessage(msg);
 		m.setFromDevice(Settings.getInstance().getName());
 		m.setTargetDevice(device.getName().toLowerCase().trim());
-		Socket socket;
-		socket = new Socket(device.getName().toLowerCase().trim(), TcpMsgServer.PORT);
+		Socket socket = new Socket();
 		try {
+			socket.setSoTimeout(30000);
+			socket.connect(new InetSocketAddress(device.getAddress(), TcpMsgServer.PORT), 30000);
 			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 			dos.writeUTF(gson.toJson(m));
 		} catch (IOException e) {

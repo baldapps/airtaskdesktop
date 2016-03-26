@@ -20,47 +20,57 @@
 package com.balda.airtask.channels;
 
 public class TransferRequest {
-    private String file;
-    private String destination;
-    private String ip;
-    private long time;
+	private String file;
+	private boolean deleteOnExit;
+	private String destination;
+	private String ip;
+	private long time;
 
-    public TransferRequest() {
-        ip = "";
-        time = System.currentTimeMillis();
-        file = "";
-        destination = "";
-    }
+	public TransferRequest() {
+		ip = "";
+		time = System.currentTimeMillis();
+		file = "";
+		destination = "";
+		deleteOnExit = false;
+	}
 
-    public String getIp() {
-        return ip;
-    }
+	public boolean isDeleteOnExit() {
+		return deleteOnExit;
+	}
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
+	public void setDeleteOnExit(boolean deleteOnExit) {
+		this.deleteOnExit = deleteOnExit;
+	}
 
-    public String getFile() {
-        return file;
-    }
+	public String getIp() {
+		return ip;
+	}
 
-    public void setFile(String file) {
-        this.file = file;
-    }
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 
-    public String getDestination() {
-        return destination;
-    }
+	public String getFile() {
+		return file;
+	}
 
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
+	public void setFile(String file) {
+		this.file = file;
+	}
 
-    public long getTime() {
-        return time;
-    }
+	public String getDestination() {
+		return destination;
+	}
 
-    public void setTime(long time) {
-        this.time = time;
-    }
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
 }
