@@ -24,7 +24,7 @@ import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import com.balda.airtask.AirTask;
+import com.balda.airtask.Settings;
 
 public class BuiltinNotifier extends Notifier {
 
@@ -33,22 +33,22 @@ public class BuiltinNotifier extends Notifier {
 
 	public BuiltinNotifier() {
 		toaster = new Toaster();
-		if (AirTask.icon != null) {
+		if (Settings.getInstance().getIconPath() != null) {
 			try {
-				icon = new ImageIcon(AirTask.icon);
+				icon = new ImageIcon(Settings.getInstance().getIconPath());
 			} catch (Exception e) {
 				icon = null;
 			}
 		} else
 			icon = null;
-		toaster.setDisplayTime(AirTask.timeout);
+		toaster.setDisplayTime(Settings.getInstance().getTimeout());
 	}
 
 	@Override
 	public void show(String msg, String from) throws IOException {
 		String origMsg;
-		if (msg.startsWith(AirTask.clip)) {
-			origMsg = msg.substring(AirTask.clip.length());
+		if (msg.startsWith(Settings.getInstance().getClipboardPrefix())) {
+			origMsg = msg.substring(Settings.getInstance().getClipboardPrefix().length());
 			toClipBoard(origMsg);
 		} else {
 			origMsg = msg;

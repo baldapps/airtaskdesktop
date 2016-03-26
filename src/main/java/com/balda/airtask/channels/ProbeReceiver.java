@@ -26,7 +26,7 @@ import java.net.MulticastSocket;
 import java.net.Socket;
 import java.util.Random;
 
-import com.balda.airtask.AirTask;
+import com.balda.airtask.Settings;
 
 public class ProbeReceiver extends Thread {
     private MulticastSocket socket;
@@ -48,7 +48,7 @@ public class ProbeReceiver extends Thread {
         Socket s = new Socket(sender, REGISTRATION_PORT);
         DataOutputStream dos = new DataOutputStream(s.getOutputStream());
         try {
-            dos.writeUTF(AirTask.pcName);
+            dos.writeUTF(Settings.getInstance().getName());
             dos.writeUTF(s.getLocalAddress().getHostAddress());
         } finally {
             dos.close();

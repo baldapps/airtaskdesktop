@@ -17,28 +17,35 @@
  * along with AirTask Desktop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.balda.airtask.channels;
+package com.balda.airtask;
 
-import java.io.File;
+public class Device {
 
-import com.balda.airtask.Device;
+	private String name;
+	private String address;
 
-public class TransferManager {
-
-	private static TransferManager instance = new TransferManager();
-
-	private TransferManager() {
+	public Device(String n, String addr) {
+		name = n;
+		address = addr;
 	}
 
-	public static TransferManager getInstance() {
-		return instance;
+	public String getName() {
+		return name;
 	}
 
-	public void sendFile(File f, Device target) {
-		TransferRequest req = new TransferRequest();
-		req.setDestination(target.getName().toLowerCase().trim());
-		req.setFile(f.getAbsolutePath());
-		req.setIp(target.getAddress());
-		new TransferClient(req).start();
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String toString() {
+		return name;
 	}
 }

@@ -10,10 +10,10 @@ It could be needed to give execute permissions to the launch scripts.
 ##How to start the software##
 
 Execute in shell script:
-java -jar airtaskdesktop-<VERSION>-all.jar <CONFIGURATION>
+java -jar airtaskdesktop-<VERSION>-all.jar
 
 Example:
-java -jar airtaskdesktop-1.0.0-all.jar /home/user/airtask.properties
+java -jar airtaskdesktop-1.0.0-all.jar
 
 As alternative you can launch the scripts:
 
@@ -27,25 +27,15 @@ As alternative you can launch the scripts:
 the command notify-send you need to install the notify-tools package for
 your GNU/Linux distribution.
 
-##Configuration##
+##Configuration parameters##
 
-#Notification timeout in milliseconds
-TIMEOUT=10000
-
-#PC name (This device name will be used to skip messages directly to other devices)
-DEVICENAME=PC
-
-#Icon path (You can set any icon you want here with absolute path) 
-ICON=/home/user/airtask.png
-
-#Clipboard command (special command for clipboard, a message that starts with this
+-Notification timeout in milliseconds
+-PC name (This device name will be used to skip messages directly to other devices)
+-Icon path (You can set any icon you want here with absolute path) 
+-Clipboard command (special command for clipboard, a message that starts with this
 prefix is treated in a special way, the text is automatically copied into the
 clipboard)
-CLIPBOARDCMD=#clip#
-
-#Devices Each device must have a row called DEVICE<N> where N is a progress number
-The value are in the form name@IpAddress, for example:
-DEVICE1=mypc@10.0.1.1
+-Devices: you need to add device name and IP address for each device you want to use
 
 ##Hook points##
 When a new message or a new file is received, the application will call two

@@ -21,24 +21,25 @@ package com.balda.airtask.ui;
 
 import java.io.IOException;
 
-import com.balda.airtask.AirTask;
+import com.balda.airtask.Settings;
 
 public class LinuxNotifier extends Notifier {
 
 	@Override
 	public void show(String msg, String from) throws IOException {
 		String iconCmd = "";
-		if (AirTask.icon != null) {
-			iconCmd = " -i " + AirTask.icon;
+		if (Settings.getInstance().getIconPath() != null) {
+			iconCmd = " -i " + Settings.getInstance().getIconPath();
 		}
-		if (msg.startsWith(AirTask.clip)) {
-			String origMsg = msg.substring(AirTask.clip.length());
-			String command = "notify-send \"" + from + "\" \"To clipboard: " + origMsg + "\" -t " + AirTask.timeout
-					+ iconCmd;
+		if (msg.startsWith(Settings.getInstance().getClipboardPrefix())) {
+			String origMsg = msg.substring(Settings.getInstance().getClipboardPrefix().length());
+			String command = "notify-send \"" + from + "\" \"To clipboard: " + origMsg + "\" -t "
+					+ Settings.getInstance().getTimeout() + iconCmd;
 			Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", command });
 			toClipBoard(origMsg);
 		} else {
-			String command = "notify-send \"" + from + "\" \"" + msg + "\" -t " + AirTask.timeout + iconCmd;
+			String command = "notify-send \"" + from + "\" \"" + msg + "\" -t " + Settings.getInstance().getTimeout()
+					+ iconCmd;
 			Runtime.getRuntime().exec(new String[] { "/bin/sh", "-c", command });
 		}
 	}

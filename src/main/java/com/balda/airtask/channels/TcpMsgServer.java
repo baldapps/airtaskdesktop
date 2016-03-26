@@ -23,7 +23,7 @@ import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.balda.airtask.AirTask;
+import com.balda.airtask.Settings;
 import com.balda.airtask.json.Message;
 import com.balda.airtask.script.ScriptFactory;
 import com.balda.airtask.ui.NotifierFactory;
@@ -46,9 +46,9 @@ public class TcpMsgServer extends Thread {
 			String from = m.getFromDevice();
 			String msg = m.getUserMessage();
 			String to = m.getTargetDevice();
-			if (from.equals(AirTask.pcName))
+			if (from.equals(Settings.getInstance().getName()))
 				return;
-			if (to != null && to.equalsIgnoreCase(AirTask.pcName)) {
+			if (to != null && to.equalsIgnoreCase(Settings.getInstance().getName())) {
 				ScriptFactory.getExecutor().onMessageReceived(from, msg);
 				NotifierFactory.getNotifier().show(msg, from);
 			} else if (to == null) {

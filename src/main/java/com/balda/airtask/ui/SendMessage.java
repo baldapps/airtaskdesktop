@@ -33,13 +33,15 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
-import com.balda.airtask.AirTask;
+import com.balda.airtask.Device;
+import com.balda.airtask.Settings;
 import com.balda.airtask.channels.TcpMsgServer;
 import com.balda.airtask.channels.TransferManager;
 import com.balda.airtask.json.Message;
@@ -57,7 +59,7 @@ public class SendMessage extends javax.swing.JFrame {
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JTextArea messageArea;
-	private javax.swing.JComboBox<String> targetDeviceText;
+	private javax.swing.JComboBox<Device> targetDeviceText;
 	private Gson gson;
 
 	/**
@@ -134,8 +136,9 @@ public class SendMessage extends javax.swing.JFrame {
 			}
 		});
 
-		for (String key : AirTask.ipMap.keySet()) {
-			targetDeviceText.addItem(key);
+		List<Device> devices = Settings.getInstance().getDevices();
+		for (Device d : devices) {
+			targetDeviceText.addItem(d);
 		}
 		
 		messageArea.setColumns(20);
@@ -189,22 +192,20 @@ public class SendMessage extends javax.swing.JFrame {
 		int returnVal = fc.showDialog(jButton2, "Send");
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
-			TransferManager.getInstance().sendFile(file,
-					((String) targetDeviceText.getSelectedItem()).toLowerCase().trim());
+			TransferManager.getInstance().sendFile(file, (Device) targetDeviceText.getSelectedItem());
 		}
 	}
 
 	private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {
 		String txt = messageArea.getText();
-		String to = (String) targetDeviceText.getSelectedItem();
+		Device device = (Device) targetDeviceText.getSelectedItem();
 		Message m = new Message();
 		m.setUserMessage(txt);
-		m.setFromDevice(AirTask.pcName);
-		if (!to.isEmpty())
-			m.setTargetDevice(to.trim());
+		m.setFromDevice(Settings.getInstance().getName());
+		m.setTargetDevice(device.getName().toLowerCase().trim());
 		Socket socket;
 		try {
-			socket = new Socket(AirTask.ipMap.get(to.toLowerCase().trim()), TcpMsgServer.PORT);
+			socket = new Socket(device.getName().toLowerCase().trim(), TcpMsgServer.PORT);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Impossible to send the message: " + e.getMessage());
 			return;

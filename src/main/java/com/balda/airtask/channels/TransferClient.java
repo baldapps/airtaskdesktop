@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.balda.airtask.AirTask;
+import com.balda.airtask.Settings;
 
 public class TransferClient extends Thread {
 
@@ -77,7 +77,7 @@ public class TransferClient extends Thread {
 		}
 		DataOutputStream dos = new DataOutputStream(os);
 		try {
-			dos.writeUTF(AirTask.pcName);
+			dos.writeUTF(Settings.getInstance().getName());
 			dos.writeUTF(myFile.getName());
 			dos.writeLong(myFile.length());
 			while (fileSize > 0 && (n = bis.read(tmp, 0, (int) Math.min(4096, fileSize))) != -1) {

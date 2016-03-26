@@ -19,14 +19,6 @@
 
 package com.balda.airtask;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import com.balda.airtask.channels.ProbeReceiver;
 import com.balda.airtask.channels.TcpMsgServer;
 import com.balda.airtask.channels.TransferServer;
@@ -34,49 +26,10 @@ import com.balda.airtask.ui.SendMessage;
 
 public class AirTask {
 
-	public static long timeout;
-	public static String pcName;
-	public static String icon;
-	public static String clip;
-	public static String downloadPath;
-	public static SendMessage form;
-	public static Map<String, String> ipMap;
-
-	public static void init(String filename) throws FileNotFoundException, IOException {
-		Properties configFile = new Properties();
-		ipMap = new HashMap<>();
-		configFile.load(new FileInputStream(filename));
-		timeout = Long.parseLong(configFile.getProperty("TIMEOUT", "10000"));
-		pcName = configFile.getProperty("DEVICENAME", "PC");
-		icon = configFile.getProperty("ICON", null);
-		clip = configFile.getProperty("CLIPBOARDCMD", "");
-		downloadPath = configFile.getProperty("DOWNLOADPATH", "");
-		if (downloadPath.endsWith("/")) {
-			downloadPath = downloadPath.substring(0, downloadPath.length() - 1);
-		}
-		for (Enumeration<?> e = configFile.propertyNames(); e.hasMoreElements();) {
-			String name = (String) e.nextElement();
-			if (name.startsWith("DEVICE")) {
-				String value = configFile.getProperty(name);
-				String[] vals = value.split("@");
-				if (vals.length != 2)
-					continue;
-				ipMap.put(vals[0].toLowerCase().trim(), vals[1].toLowerCase().trim());
-			}
-		}
-	}
-
+	private static SendMessage form;
+	
 	public static void main(String[] args) {
 
-		if (args.length == 0) {
-			System.out.println("USAGE: java -jar airtask.jar CONFILE");
-			return;
-		}
-		try {
-			init(args[0]);
-		} catch (IOException e) {
-			System.out.println("error: " + e.getMessage());
-		}
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -98,8 +51,7 @@ public class AirTask {
 					ex);
 		}
 
-		/* Create and display the form */
-
+		/* Create the form */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				form = new SendMessage();

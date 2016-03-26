@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.balda.airtask.AirTask;
+import com.balda.airtask.Settings;
 import com.balda.airtask.script.ScriptFactory;
 import com.balda.airtask.ui.NotifierFactory;
 
@@ -97,7 +97,7 @@ public class TransferServer extends Thread {
 			}
 			return;
 		}
-		File folder = new File(AirTask.downloadPath);
+		File folder = new File(Settings.getInstance().getDownloadPath());
 		if (!folder.exists()) {
 			if (!folder.mkdirs()) {
 				try {
@@ -108,7 +108,7 @@ public class TransferServer extends Thread {
 			}
 		}
 
-		File dest = new File(AirTask.downloadPath + "/" + fileName);
+		File dest = new File(Settings.getInstance().getDownloadPath() + "/" + fileName);
 		if (dest.exists()) {
 			// noinspection ResultOfMethodCallIgnored
 			dest.delete();
@@ -116,7 +116,7 @@ public class TransferServer extends Thread {
 
 		FileOutputStream fos;
 		try {
-			fos = new FileOutputStream(AirTask.downloadPath + "/" + fileName);
+			fos = new FileOutputStream(Settings.getInstance().getDownloadPath() + "/" + fileName);
 		} catch (FileNotFoundException e) {
 			try {
 				dis.close();
