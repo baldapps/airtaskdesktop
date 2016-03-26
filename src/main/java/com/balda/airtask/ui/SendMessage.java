@@ -286,6 +286,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 					} catch (IOException e) {
 						lastErr = e.getMessage();
 					}
+					break;
 				}
 			} else {
 				Object object;
@@ -304,6 +305,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 						continue;
 					}
 					TransferManager.getInstance().sendFile(f, device, true);
+					break;
 				} else if (object instanceof List) {
 					@SuppressWarnings("unchecked")
 					List<File> selectedFileList = (List<File>) object;
@@ -316,6 +318,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 							lastErr = "Directory transfer is not supported";
 						}
 					}
+					break;
 				}
 			}
 		}
