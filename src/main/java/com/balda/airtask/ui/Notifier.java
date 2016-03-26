@@ -23,13 +23,36 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
-public abstract class Notifier {
+import com.balda.airtask.Settings;
+
+public abstract class Notifier implements PreferenceChangeListener {
+
+	private boolean show;
+
+	public Notifier() {
+		show = true;
+		Settings.getInstance().addListener(this);
+	}
+
 	protected void toClipBoard(String msg) {
 		StringSelection stringSelection = new StringSelection(msg);
 		Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clpbrd.setContents(stringSelection, null);
 	}
 
-	public abstract void show(String msg, String from) throws IOException;
+	public void notify(String msg, String from) throws IOException {
+		if (show)
+			show(msg, from);
+	}
+
+	public void preferenceChange(PreferenceChangeEvent evt) {
+		if (evt.getKey().equals(Settings.SHOW_NOTIFICATIONS)) {
+			show = Settings.getInstance().showNotifications();
+		}
+	}
+
+	protected abstract void show(String msg, String from) throws IOException;
 }

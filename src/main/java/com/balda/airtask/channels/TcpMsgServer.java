@@ -50,10 +50,10 @@ public class TcpMsgServer extends Thread {
 				return;
 			if (to != null && to.equalsIgnoreCase(Settings.getInstance().getName())) {
 				ScriptFactory.getExecutor().onMessageReceived(from, msg);
-				NotifierFactory.getNotifier().show(msg, from);
+				NotifierFactory.getNotifier().notify(msg, from);
 			} else if (to == null) {
 				ScriptFactory.getExecutor().onMessageReceived(from, msg);
-				NotifierFactory.getNotifier().show(msg, from);
+				NotifierFactory.getNotifier().notify(msg, from);
 			}
 		}
     }

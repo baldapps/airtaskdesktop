@@ -20,6 +20,7 @@
 package com.balda.airtask.ui;
 
 import java.awt.AWTException;
+import java.awt.CheckboxMenuItem;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.MenuItem;
@@ -29,6 +30,8 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -88,14 +91,23 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 		final PopupMenu popup = new PopupMenu();
 		final TrayIcon icon = new TrayIcon(imageForTray(tray), "AirTask", popup);
 
-		MenuItem item1 = new MenuItem("OPEN");
+		CheckboxMenuItem cb1 = new CheckboxMenuItem("Notifications");
+		cb1.setState(Settings.getInstance().showNotifications());
+		cb1.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				Settings.getInstance().setShowNotifications(!Settings.getInstance().showNotifications());
+			}		
+		});
+
+		MenuItem item1 = new MenuItem("Open");
 		item1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(true);
 			}
 		});
-		MenuItem item2 = new MenuItem("EXIT");
+		MenuItem item2 = new MenuItem("Exit");
 		item2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -105,6 +117,8 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 				System.exit(0);
 			}
 		});
+		popup.add(cb1);
+		popup.addSeparator();
 		popup.add(item1);
 		popup.add(item2);
 		try {

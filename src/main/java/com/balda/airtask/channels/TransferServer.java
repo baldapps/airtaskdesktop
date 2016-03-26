@@ -132,7 +132,7 @@ public class TransferServer extends Thread {
 				remaining -= read;
 				fos.write(buffer, 0, read);
 			}
-			NotifierFactory.getNotifier().show("File " + dest.getName() + " received", sender);
+			NotifierFactory.getNotifier().notify("File " + dest.getName() + " received", sender);
 			ScriptFactory.getExecutor().onFileReceived(sender, dest.getName());
 		} catch (IOException ignored) {
 		} finally {

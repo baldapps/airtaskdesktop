@@ -33,12 +33,14 @@ public class Settings {
 	public static final String ICONPATH = "iconpath";
 	public static final String DEVICES = "devices";
 	public static final String CLIPBOARD = "clipboard";
+	public static final String SHOW_NOTIFICATIONS = "shownotificatios";
 
 	public static final int DEF_TIMEOUT = 10000;
 	public static final String DEF_NAME = "pc";
 	public static final String DEF_DOWNLOADPATH = System.getProperty("user.home") + "/Downloads";
 	public static final String DEF_ICONPATH = System.getProperty("user.dir") + "/airtask.png";
 	public static final String DEF_CLIPBOARD = "#clip#";
+	public static final boolean DEF_SHOW = true;
 	private Preferences prefs = Preferences.userNodeForPackage(getClass());
 
 	private static Settings instance = new Settings();
@@ -50,6 +52,10 @@ public class Settings {
 		return instance;
 	}
 
+	public boolean showNotifications() {
+		return prefs.getBoolean(SHOW_NOTIFICATIONS, DEF_SHOW);
+	}
+	
 	public int getTimeout() {
 		return prefs.getInt(TIMEOUT, DEF_TIMEOUT);
 	}
@@ -118,6 +124,10 @@ public class Settings {
 			b.append(";");
 		}
 		prefs.put(DEVICES, b.substring(0, b.length() - 1));
+	}
+	
+	public void setShowNotifications(boolean show) {
+		prefs.putBoolean(SHOW_NOTIFICATIONS, show);
 	}
 	
 	public void addListener(PreferenceChangeListener pcl) {
