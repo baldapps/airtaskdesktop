@@ -262,11 +262,12 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 		try {
 			transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
 		} catch (IllegalStateException e) {
-			JOptionPane.showMessageDialog(this, "Impossible to send the message: clipboard not available");
+			JOptionPane.showMessageDialog(this, "Impossible to send the message: clipboard not available", "AirTask",
+					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (transferable == null) {
-			JOptionPane.showMessageDialog(this, "Clipboard is empty");
+			JOptionPane.showMessageDialog(this, "Clipboard is empty", "AirTask", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		String lastErr = null;
@@ -323,7 +324,8 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 			}
 		}
 		if (lastErr != null) {
-			JOptionPane.showMessageDialog(this, "An error occured during transfer: " + lastErr);
+			JOptionPane.showMessageDialog(this, "An error occured during transfer: " + lastErr, "AirTask",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -335,7 +337,8 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 			TransferManager.getInstance().sendMessage(txt, device);
 		} catch (IOException e) {
 			failed = true;
-			JOptionPane.showMessageDialog(this, "Impossible to send the message: " + e.getMessage());
+			JOptionPane.showMessageDialog(this, "Impossible to send the message: " + e.getMessage(), "AirTask",
+					JOptionPane.ERROR_MESSAGE);
 		}
 		if (!failed)
 			messageArea.setText("");

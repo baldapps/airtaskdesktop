@@ -46,7 +46,7 @@ public class TransferClient extends Thread {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				JOptionPane.showMessageDialog(null, msg);
+				JOptionPane.showMessageDialog(null, msg, "AirTask", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 	}
