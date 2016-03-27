@@ -79,6 +79,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 	private JTextArea messageArea;
 	private JComboBox<Device> targetDeviceText;
 	private JMenuBar menuBar;
+	private PriorityComboBoxModel comboModel;
 
 	/**
 	 * Creates new form SendMessage
@@ -184,9 +185,8 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 		});
 
 		List<Device> devices = Settings.getInstance().getDevices();
-		for (Device d : devices) {
-			targetDeviceText.addItem(d);
-		}
+		comboModel = new PriorityComboBoxModel(devices);
+		targetDeviceText.setModel(comboModel);
 
 		messageArea.setColumns(20);
 		messageArea.setRows(5);
@@ -344,11 +344,9 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 	@Override
 	public void preferenceChange(PreferenceChangeEvent evt) {
 		if (evt.getKey().equals(Settings.DEVICES)) {
-			targetDeviceText.removeAllItems();
+			comboModel.removeAllElements();
 			List<Device> devices = Settings.getInstance().getDevices();
-			for (Device d : devices) {
-				targetDeviceText.addItem(d);
-			}
+			comboModel.addAll(devices);
 		}
 	}
 }

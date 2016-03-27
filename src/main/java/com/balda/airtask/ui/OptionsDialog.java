@@ -313,7 +313,6 @@ public class OptionsDialog extends JDialog {
 				dev.setDefault(false);
 			listModel.addElement(dev);
 		}
-		s.setDevices(devices);
 	}
 
 	private boolean onExit() {

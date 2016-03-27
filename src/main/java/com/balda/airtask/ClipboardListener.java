@@ -56,8 +56,10 @@ public class ClipboardListener implements ClipboardOwner, PreferenceChangeListen
 			}
 		}
 		sync = Settings.getInstance().syncClipboard();
-		Transferable trans = sysClip.getContents(this);
-		regainOwnership(trans);
+		if (sync) {
+			Transferable trans = sysClip.getContents(this);
+			regainOwnership(trans);
+		}
 	}
 
 	public void pasteClipboard(Transferable transferable, Device device) {
@@ -80,6 +82,10 @@ public class ClipboardListener implements ClipboardOwner, PreferenceChangeListen
 			}
 		} else if (evt.getKey().equals(Settings.SYNC_CLIPBOARD)) {
 			sync = Settings.getInstance().syncClipboard();
+			if (sync) {
+				Transferable trans = sysClip.getContents(this);
+				regainOwnership(trans);
+			}
 		}
 	}
 
@@ -89,12 +95,13 @@ public class ClipboardListener implements ClipboardOwner, PreferenceChangeListen
 
 	@Override
 	public void lostOwnership(Clipboard arg0, Transferable arg1) {
-		try {
-			Transferable contents = arg0.getContents(this);
-			if (sync && device != null)
+		if (sync && device != null) {
+			try {
+				Transferable contents = arg0.getContents(this);
 				pasteClipboard(arg1, device);
-			regainOwnership(contents);
-		} catch (Exception ignored) {
+				regainOwnership(contents);
+			} catch (Exception ignored) {
+			}
 		}
 	}
 }
