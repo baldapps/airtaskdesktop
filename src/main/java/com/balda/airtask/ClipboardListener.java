@@ -62,12 +62,20 @@ public class ClipboardListener implements ClipboardOwner, PreferenceChangeListen
 		}
 	}
 
-	public void pasteClipboard(Transferable transferable, Device device) {
+	private void pasteClipboard(Transferable transferable, Device device) {
+		if (transferable == null)
+			return;
 		try {
 			String data = (String) transferable.getTransferData(DataFlavor.stringFlavor);
-			TransferManager.getInstance().sendMessage(Settings.getInstance().getClipboardPrefix() + data, device);
+			if (data != null)
+				TransferManager.getInstance().sendMessage(Settings.getInstance().getClipboardPrefix() + data, device);
 		} catch (IOException | UnsupportedFlavorException e) {
 		}
+	}
+
+	public void pasteClipboard(Device device) {
+		Transferable transferable = sysClip.getContents(this);
+		pasteClipboard(transferable, device);
 	}
 
 	@Override

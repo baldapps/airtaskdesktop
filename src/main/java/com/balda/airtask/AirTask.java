@@ -36,6 +36,83 @@ public class AirTask {
 
 	private static SendMessage form;
 
+	private static void processClip(Parameters params) {
+		List<Device> devices = Settings.getInstance().getDevices();
+		if (params.getDevice() != null) {
+			if (devices.contains(params.getDevice())) {
+				ClipboardListener.getInstance().pasteClipboard(devices.get(devices.indexOf(params.getDevice())));
+				System.exit(0);
+			} else {
+				System.err.println("Device not found");
+				System.exit(1);
+				return;
+			}
+		} else {
+			if (devices.size() > 0 && devices.get(0).isDefault()) {
+				ClipboardListener.getInstance().pasteClipboard(devices.get(devices.indexOf(params.getDevice())));
+				System.exit(0);
+			} else {
+				System.err.println("Device not found");
+				System.exit(1);
+				return;
+			}
+		}
+	}
+
+	private static void processFile(Parameters params) {
+		File file = new File(params.getFile());
+		List<Device> devices = Settings.getInstance().getDevices();
+		if (params.getDevice() != null) {
+			if (devices.contains(params.getDevice())) {
+				TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(params.getDevice())), false);
+				System.exit(0);
+			} else {
+				System.err.println("Device not found");
+				System.exit(1);
+				return;
+			}
+		} else {
+			if (devices.size() > 0 && devices.get(0).isDefault()) {
+				TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(params.getDevice())), false);
+				System.exit(0);
+			} else {
+				System.err.println("Device not found");
+				System.exit(1);
+				return;
+			}
+		}
+	}
+
+	private static void processMessage(Parameters params) {
+		List<Device> devices = Settings.getInstance().getDevices();
+		try {
+			if (params.getDevice() != null) {
+				if (devices.contains(params.getDevice())) {
+					TransferManager.getInstance().sendMessage(params.getMessage(),
+							devices.get(devices.indexOf(params.getDevice())));
+					System.exit(0);
+				} else {
+					System.err.println("Device not found");
+					System.exit(1);
+					return;
+				}
+			} else {
+				if (devices.size() > 0 && devices.get(0).isDefault()) {
+					TransferManager.getInstance().sendMessage(params.getMessage(), devices.get(0));
+					System.exit(0);
+				} else {
+					System.err.println("Device not found");
+					System.exit(1);
+					return;
+				}
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(1);
+			return;
+		}
+	}
+
 	public static void main(String[] args) {
 		Parameters params = new Parameters();
 		CmdLineParser parser = new CmdLineParser(params);
@@ -48,40 +125,13 @@ public class AirTask {
 			System.exit(1);
 			return;
 		}
-		if (params.getDevice() != null) {
-			if (params.getFile() != null) {
-				File file = new File(params.getFile());
-				List<Device> devices = Settings.getInstance().getDevices();
-				if (devices.contains(params.getDevice())) {
-					TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(params.getDevice())),
-							false);
-				} else {
-					System.err.println("Device not found");
-					System.exit(1);
-					return;
-				}
-			} else if (params.getMessage() != null) {
-				List<Device> devices = Settings.getInstance().getDevices();
-				try {
-					if (devices.contains(params.getDevice())) {
-						TransferManager.getInstance().sendMessage(params.getMessage(),
-								devices.get(devices.indexOf(params.getDevice())));
-					} else {
-						System.err.println("Device not found");
-						System.exit(1);
-						return;
-					}
-				} catch (IOException e) {
-					System.err.println(e.getMessage());
-					System.exit(1);
-					return;
-				}
-			} else {
-				parser.printUsage(System.err);
-				System.exit(1);
-				return;
-			}
-			return;
+
+		if (params.sendClip()) {
+			processClip(params);
+		} else if (params.getFile() != null) {
+			processFile(params);
+		} else if (params.getMessage() != null) {
+			processMessage(params);
 		}
 
 		try {

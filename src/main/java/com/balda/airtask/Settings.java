@@ -97,7 +97,7 @@ public class Settings {
 			if (devInfo.length == 2) {
 				devices.add(new Device(devInfo[0], devInfo[1], false));
 			} else if (devInfo.length == 3) {
-				devices.add(new Device(devInfo[0], devInfo[1], Boolean.valueOf(devInfo[2])));
+				devices.add(0, new Device(devInfo[0], devInfo[1], Boolean.valueOf(devInfo[2])));
 			}
 		}
 		return devices;

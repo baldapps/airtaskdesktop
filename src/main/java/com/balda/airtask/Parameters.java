@@ -22,20 +22,28 @@ package com.balda.airtask;
 import org.kohsuke.args4j.Option;
 
 public class Parameters {
-	@Option(name="-m",usage="message to send",metaVar="MESSAGE",forbids={"-f"},depends={"-d"})
+	@Option(name = "-m", usage = "message to send", metaVar = "MESSAGE", forbids = { "-f" })
 	private String message;
-	@Option(name="-f",usage="file to send",metaVar="FILE",forbids={"-m"},depends={"-d"})
+	@Option(name = "-f", usage = "file to send", metaVar = "FILE", forbids = { "-m" })
 	private String file;
-	@Option(name="-d",usage="target device name",metaVar="DEVICE")
+	@Option(name = "-d", usage = "target device name", metaVar = "DEVICE")
 	private String device;
+	@Option(name = "-clip", usage = "send clipboard to device", forbids = { "-m", "-f" })
+	private boolean clip;
 
 	public String getMessage() {
 		return message;
 	}
+
 	public String getFile() {
 		return file;
 	}
+
 	public String getDevice() {
 		return device;
+	}
+
+	public boolean sendClip() {
+		return clip;
 	}
 }

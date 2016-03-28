@@ -19,7 +19,7 @@
 
 package com.balda.airtask;
 
-public class Device implements Comparable {
+public class Device implements Comparable<Device> {
 
 	private String name;
 	private String address;
@@ -85,7 +85,7 @@ public class Device implements Comparable {
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
-		return name.compareTo(((Device) arg0).getName());
+	public int compareTo(Device arg0) {
+		return name.compareTo(arg0.getName());
 	}
 }

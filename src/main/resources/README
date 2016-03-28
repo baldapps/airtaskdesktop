@@ -51,3 +51,12 @@ When a new message or a new file is received, the application will call two
 scripts: fileReceived, messageReceived. In this script you can add any kind
 of action. The scripts receives the sender, the file name and the message. On
 Windows platform, the file with BAT extension are used.
+
+##Command line##
+AirTask can be invoked from command line using the following arguments:
+
+-d DEVICE: To specify a device as destination. If not specified, the default one is used
+(if any)
+-f FILE: To transfer a file using its path
+-m MESSAGE: To transfer a message
+-clip: To copy the pc clipboard to a device selected with -d or the default one
