@@ -75,12 +75,18 @@
 				<version>2.4</version>
 				<configuration>
 					<excludes>
-						<exclude>**/airtask.properties</exclude>
 						<exclude>**/airtask.png</exclude>
 						<exclude>**/APACHELIC</exclude>
-						<exclude>**/CREDITS</exclude>
+						<exclude>**/NOTICE</exclude>
 						<exclude>**/LICENSE</exclude>
 						<exclude>**/README</exclude>
+						<exclude>**/fileReceived</exclude>
+						<exclude>**/messageReceived</exclude>
+						<exclude>**/messageReceived.bat</exclude>
+						<exclude>**/fileReceived.bat</exclude>
+						<exclude>**/launch-win.bat</exclude>
+						<exclude>**/launch-osx.command</exclude>
+						<exclude>**/launch-linux</exclude>
 					</excludes>
 					<archive>
 						<manifest>
