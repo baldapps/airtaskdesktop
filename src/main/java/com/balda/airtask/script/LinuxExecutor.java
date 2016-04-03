@@ -21,14 +21,14 @@ package com.balda.airtask.script;
 
 import java.io.IOException;
 
-public class LinuxExecutor implements ScriptExecutor {
+public class LinuxExecutor extends ScriptExecutor {
 
 	LinuxExecutor() {
 	}
 
 	@Override
 	public void onFileReceived(String from, String path) {
-		ProcessBuilder pb = new ProcessBuilder("/bin/bash", "fileReceived", from, path);
+		ProcessBuilder pb = new ProcessBuilder("/bin/bash", root + "/fileReceived", from, path);
 		try {
 			pb.start();
 		} catch (IOException e) {
@@ -38,7 +38,7 @@ public class LinuxExecutor implements ScriptExecutor {
 
 	@Override
 	public void onMessageReceived(String from, String msg) {
-		ProcessBuilder pb = new ProcessBuilder("/bin/bash", "messageReceived", from, msg);
+		ProcessBuilder pb = new ProcessBuilder("/bin/bash", root + "/messageReceived", from, msg);
 		try {
 			pb.start();
 		} catch (IOException e) {

@@ -21,11 +21,11 @@ package com.balda.airtask.script;
 
 import java.io.IOException;
 
-public class MacExecutor implements ScriptExecutor {
+public class MacExecutor extends ScriptExecutor {
 
 	MacExecutor() {
 	}
-	
+
 	@Override
 	public void onFileReceived(String from, String path) {
 		ProcessBuilder pb = new ProcessBuilder("/bin/bash", "fileReceived", from, path);
