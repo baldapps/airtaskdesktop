@@ -34,7 +34,7 @@ import com.balda.airtask.ui.SendMessage;
 
 public class AirTask {
 
-	private static SendMessage form;
+	public static SendMessage form;
 
 	private static void processClip(Parameters params) {
 		List<Device> devices = Settings.getInstance().getDevices();

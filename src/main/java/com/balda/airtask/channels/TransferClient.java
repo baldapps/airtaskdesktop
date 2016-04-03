@@ -32,6 +32,7 @@ import java.net.SocketException;
 
 import javax.swing.JOptionPane;
 
+import com.balda.airtask.AirTask;
 import com.balda.airtask.Settings;
 
 public class TransferClient extends Thread {
@@ -46,7 +47,7 @@ public class TransferClient extends Thread {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				JOptionPane.showMessageDialog(null, msg, "AirTask", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(AirTask.form, msg, "AirTask", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 	}
