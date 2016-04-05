@@ -19,6 +19,12 @@
 
 package com.balda.airtask;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +50,7 @@ public class Settings {
 	public static final boolean DEF_SHOW = true;
 	public static final boolean DEF_SYNC_CLIPBOARD = false;
 	private Preferences prefs = Preferences.userNodeForPackage(getClass());
+	private static final int MAX_BYTE_LEN = (Preferences.MAX_VALUE_LENGTH * 3) / 4;
 
 	private static final Settings instance = new Settings();
 
@@ -86,21 +93,12 @@ public class Settings {
 		return prefs.get(CLIPBOARD, DEF_CLIPBOARD);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Device> getDevices() {
-		String list = prefs.get(DEVICES, null);
+		ArrayList<Device> list = (ArrayList<Device>) getSerializable(DEVICES);
 		if (list == null)
 			return Collections.emptyList();
-		String[] tokens = list.split(";");
-		ArrayList<Device> devices = new ArrayList<>();
-		for (String d : tokens) {
-			String[] devInfo = d.split("@");
-			if (devInfo.length == 2) {
-				devices.add(new Device(devInfo[0], devInfo[1], false));
-			} else if (devInfo.length == 3) {
-				devices.add(0, new Device(devInfo[0], devInfo[1], Boolean.valueOf(devInfo[2])));
-			}
-		}
-		return devices;
+		return list;
 	}
 
 	public void setTimeout(int timeout) {
@@ -123,23 +121,8 @@ public class Settings {
 		prefs.put(CLIPBOARD, prefix);
 	}
 
-	public void setDevices(List<Device> list) {
-		if (list.size() == 0) {
-			prefs.remove(DEVICES);
-			return;
-		}
-		StringBuilder b = new StringBuilder();
-		for (Device d : list) {
-			b.append(d.getName());
-			b.append("@");
-			b.append(d.getAddress());
-			if (d.isDefault()) {
-				b.append("@");
-				b.append(d.isDefault());
-			}
-			b.append(";");
-		}
-		prefs.put(DEVICES, b.substring(0, b.length() - 1));
+	public void setDevices(ArrayList<Device> list) {
+		putSerializable(DEVICES, list);
 	}
 
 	public void setShowNotifications(boolean show) {
@@ -152,5 +135,64 @@ public class Settings {
 
 	public void removeListener(PreferenceChangeListener pcl) {
 		prefs.removePreferenceChangeListener(pcl);
+	}
+
+	private void putSerializable(String key, Serializable s) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream objs;
+		try {
+			objs = new ObjectOutputStream(bos);
+			objs.writeObject(s);
+		} catch (IOException e) {
+			return;
+		}
+		byte bytes[] = bos.toByteArray();
+
+		int nChunks = (bytes.length + MAX_BYTE_LEN - 1) / MAX_BYTE_LEN;
+		byte chunks[][] = new byte[nChunks][];
+		for (int i = 0; i < nChunks; ++i) {
+			int startByte = i * MAX_BYTE_LEN;
+			int endByte = startByte + MAX_BYTE_LEN;
+			if (endByte > bytes.length)
+				endByte = bytes.length;
+			int length = endByte - startByte;
+			chunks[i] = new byte[length];
+			System.arraycopy(bytes, startByte, chunks[i], 0, length);
+		}
+
+		for (int i = 0; i < chunks.length; ++i) {
+			prefs.putByteArray(key + i, chunks[i]);
+		}
+		prefs.putInt(key + "len", nChunks);
+	}
+
+	private Serializable getSerializable(String key) {
+		Serializable t = null;
+		int length = 0;
+
+		int nChunks = prefs.getInt(key + "len", 0);
+		if (nChunks == 0)
+			return null;
+		byte chunks[][] = new byte[nChunks][];
+		for (int i = 0; i < nChunks; i++) {
+			chunks[i] = prefs.getByteArray(key + i, null);
+			if (chunks[i] == null)
+				return null;
+			length += chunks[i].length;
+		}
+		byte bytes[] = new byte[length];
+		int offset = 0;
+		for (int i = 0; i < chunks.length; i++) {
+			System.arraycopy(chunks[i], 0, bytes, offset, chunks[i].length);
+			offset += chunks[i].length;
+		}
+		try {
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+			ObjectInputStream objs = new ObjectInputStream(bis);
+			t = (Serializable) objs.readObject();
+		} catch (ClassCastException | IOException | ClassNotFoundException e) {
+			t = null;
+		}
+		return t;
 	}
 }

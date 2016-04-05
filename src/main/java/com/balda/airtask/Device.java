@@ -19,8 +19,14 @@
 
 package com.balda.airtask;
 
-public class Device implements Comparable<Device> {
+import java.io.Serializable;
 
+public class Device implements Comparable<Device>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8595922940850033684L;
 	private String name;
 	private String address;
 	private boolean def;
