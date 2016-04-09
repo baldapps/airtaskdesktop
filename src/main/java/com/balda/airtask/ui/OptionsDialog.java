@@ -67,8 +67,10 @@ public class OptionsDialog extends JDialog {
 	private JTextField clipboardPrefixField;
 	private JTextField downloadPathField;
 	private JList<Device> deviceList;
+	private JList<NotificationFilter> filterList;
 	private JCheckBox chckbxNewCheckBox;
 	private DefaultListModel<Device> listModel;
+	private DefaultListModel<NotificationFilter> filterModel;
 
 	private class DeviceRenderer extends JLabel implements ListCellRenderer<Device> {
 		/**
@@ -99,7 +101,7 @@ public class OptionsDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public OptionsDialog() {
-		setBounds(100, 100, 480, 450);
+		setBounds(100, 100, 480, 550);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle("Options");
 		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
@@ -251,6 +253,45 @@ public class OptionsDialog extends JDialog {
 		chckbxNewCheckBox = new JCheckBox("Sync clipboard with default device");
 		chckbxNewCheckBox.setBounds(24, 342, 303, 23);
 		contentPanel.add(chckbxNewCheckBox);
+
+		filterList = new JList<>();
+		filterModel = new DefaultListModel<>();
+		filterList.setModel(filterModel);
+		filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		filterList.setLayoutOrientation(JList.VERTICAL_WRAP);
+		filterList.setBounds(24, 391, 303, 85);
+		contentPanel.add(filterList);
+
+		JLabel lblFilters = new JLabel("Notification filters");
+		lblFilters.setBounds(24, 373, 152, 15);
+		contentPanel.add(lblFilters);
+
+		JButton btnAddFilter = new JButton("Add filter");
+		btnAddFilter.setFont(new Font("Dialog", Font.BOLD, 10));
+		btnAddFilter.setBounds(339, 388, 129, 25);
+		btnAddFilter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				FilterDialog dialog = new FilterDialog();
+				NotificationFilter filter = dialog.showDialog();
+				if (filter != null) {
+					filterModel.addElement(filter);
+				}
+			}
+		});
+		contentPanel.add(btnAddFilter);
+
+		JButton btnRemoveFilter = new JButton("Remove filter");
+		btnRemoveFilter.setFont(new Font("Dialog", Font.BOLD, 10));
+		btnRemoveFilter.setBounds(339, 451, 129, 25);
+		btnRemoveFilter.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = filterList.getSelectedIndex();
+				filterModel.remove(index);
+			}
+		});
+		contentPanel.add(btnRemoveFilter);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -300,6 +341,10 @@ public class OptionsDialog extends JDialog {
 		for (Device d : list) {
 			listModel.addElement(d);
 		}
+		List<NotificationFilter> filters = s.getFilters();
+		for (NotificationFilter f : filters) {
+			filterModel.addElement(f);
+		}
 	}
 
 	private void setAsDefault(Device d) {
@@ -344,8 +389,14 @@ public class OptionsDialog extends JDialog {
 		for (int i = 0; i < size; i++) {
 			list.add(listModel.getElementAt(i));
 		}
+		size = filterModel.getSize();
+		ArrayList<NotificationFilter> filters = new ArrayList<>();
+		for (int i = 0; i < size; i++) {
+			filters.add(filterModel.getElementAt(i));
+		}
 		s.setSyncClipboard(chckbxNewCheckBox.isSelected());
 		s.setDevices(list);
+		s.setFilters(filters);
 		s.setClipboardPrefix(clipboardPrefixField.getText());
 		s.setDownloadPath(downloadPathField.getText());
 		s.setIconPath(iconField.getText());

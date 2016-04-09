@@ -23,6 +23,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
+import java.util.List;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
@@ -31,9 +32,11 @@ import com.balda.airtask.Settings;
 public abstract class Notifier implements PreferenceChangeListener {
 
 	private boolean show;
+	private List<NotificationFilter> filters;
 
 	public Notifier() {
 		show = true;
+		filters = Settings.getInstance().getFilters();
 		Settings.getInstance().addListener(this);
 	}
 
@@ -44,13 +47,22 @@ public abstract class Notifier implements PreferenceChangeListener {
 	}
 
 	public void notify(String msg, String from) throws IOException {
-		if (show)
+		if (show) {
+			for (NotificationFilter f : filters) {
+				if (!f.apply(msg, from)) {
+					return;
+				}
+			}
 			show(msg, from);
+		}
 	}
 
+	@Override
 	public void preferenceChange(PreferenceChangeEvent evt) {
 		if (evt.getKey().equals(Settings.SHOW_NOTIFICATIONS)) {
 			show = Settings.getInstance().showNotifications();
+		} else if (evt.getKey().equals(Settings.FILTERS)) {
+			filters = Settings.getInstance().getFilters();
 		}
 	}
 

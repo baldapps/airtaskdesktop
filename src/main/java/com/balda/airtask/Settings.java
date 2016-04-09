@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
+import com.balda.airtask.ui.NotificationFilter;
+
 public class Settings {
 
 	public static final String TIMEOUT = "timeout";
@@ -38,6 +40,7 @@ public class Settings {
 	public static final String DOWNLOADPATH = "downloadpath";
 	public static final String ICONPATH = "iconpath";
 	public static final String DEVICES = "devices";
+	public static final String FILTERS = "filters";
 	public static final String CLIPBOARD = "clipboard";
 	public static final String SHOW_NOTIFICATIONS = "shownotificatios";
 	public static final String SYNC_CLIPBOARD = "sync_clipboard";
@@ -101,6 +104,14 @@ public class Settings {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<NotificationFilter> getFilters() {
+		ArrayList<NotificationFilter> list = (ArrayList<NotificationFilter>) getSerializable(FILTERS);
+		if (list == null)
+			return Collections.emptyList();
+		return list;
+	}
+
 	public void setTimeout(int timeout) {
 		prefs.putInt(TIMEOUT, timeout);
 	}
@@ -123,6 +134,10 @@ public class Settings {
 
 	public void setDevices(ArrayList<Device> list) {
 		putSerializable(DEVICES, list);
+	}
+
+	public void setFilters(ArrayList<NotificationFilter> list) {
+		putSerializable(FILTERS, list);
 	}
 
 	public void setShowNotifications(boolean show) {
