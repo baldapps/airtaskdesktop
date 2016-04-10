@@ -2,7 +2,7 @@
 
 You put the file airtask.jar in any folder on your pc.
 AirTask uses the multicast address 226.0.0.1 port 9879 to receive device info.
-In addition, the port 9876 and 9877 must be open in your firewall in order to
+In addition, the port 9876, 9877 and 9878 must be open in your firewall in order to
 receive files and messages.
 
 It could be needed to give execute permissions to the launch scripts. 
