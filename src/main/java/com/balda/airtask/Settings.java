@@ -26,8 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 
@@ -97,18 +95,18 @@ public class Settings {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Device> getDevices() {
+	public ArrayList<Device> getDevices() {
 		ArrayList<Device> list = (ArrayList<Device>) getSerializable(DEVICES);
 		if (list == null)
-			return Collections.emptyList();
+			return new ArrayList<>();
 		return list;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<NotificationFilter> getFilters() {
+	public ArrayList<NotificationFilter> getFilters() {
 		ArrayList<NotificationFilter> list = (ArrayList<NotificationFilter>) getSerializable(FILTERS);
 		if (list == null)
-			return Collections.emptyList();
+			return new ArrayList<>();
 		return list;
 	}
 

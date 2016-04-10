@@ -27,6 +27,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 import com.balda.airtask.channels.ProbeReceiver;
+import com.balda.airtask.channels.RegistrationServer;
 import com.balda.airtask.channels.TcpMsgServer;
 import com.balda.airtask.channels.TransferManager;
 import com.balda.airtask.channels.TransferServer;
@@ -171,5 +172,7 @@ public class AirTask {
 		serv.start();
 		ProbeReceiver p = new ProbeReceiver();
 		p.start();
+		RegistrationServer reg = new RegistrationServer();
+		reg.start();
 	}
 }

@@ -346,7 +346,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 
 	@Override
 	public void preferenceChange(PreferenceChangeEvent evt) {
-		if (evt.getKey().equals(Settings.DEVICES)) {
+		if (evt.getKey().startsWith(Settings.DEVICES)) {
 			comboModel.removeAllElements();
 			List<Device> devices = Settings.getInstance().getDevices();
 			comboModel.addAll(devices);

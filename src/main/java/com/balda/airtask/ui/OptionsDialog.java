@@ -27,9 +27,12 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -53,8 +56,9 @@ import javax.swing.text.NumberFormatter;
 
 import com.balda.airtask.Device;
 import com.balda.airtask.Settings;
+import com.balda.airtask.channels.ProbeClient;
 
-public class OptionsDialog extends JDialog {
+public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 
 	/**
 	 * 
@@ -101,7 +105,8 @@ public class OptionsDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public OptionsDialog() {
-		setBounds(100, 100, 480, 550);
+		Settings.getInstance().addListener(this);
+		setBounds(100, 100, 480, 590);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle("Options");
 		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
@@ -174,7 +179,7 @@ public class OptionsDialog extends JDialog {
 		deviceList.setModel(listModel);
 		deviceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		deviceList.setLayoutOrientation(JList.VERTICAL_WRAP);
-		deviceList.setBounds(24, 250, 303, 84);
+		deviceList.setBounds(24, 250, 303, 115);
 		contentPanel.add(deviceList);
 
 		JButton addDeviceBtn = new JButton("Add device");
@@ -251,7 +256,7 @@ public class OptionsDialog extends JDialog {
 		contentPanel.add(btnNewButton);
 
 		chckbxNewCheckBox = new JCheckBox("Sync clipboard with default device");
-		chckbxNewCheckBox.setBounds(24, 342, 303, 23);
+		chckbxNewCheckBox.setBounds(24, 373, 303, 23);
 		contentPanel.add(chckbxNewCheckBox);
 
 		filterList = new JList<>();
@@ -259,16 +264,16 @@ public class OptionsDialog extends JDialog {
 		filterList.setModel(filterModel);
 		filterList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		filterList.setLayoutOrientation(JList.VERTICAL_WRAP);
-		filterList.setBounds(24, 391, 303, 85);
+		filterList.setBounds(24, 420, 303, 85);
 		contentPanel.add(filterList);
 
 		JLabel lblFilters = new JLabel("Notification filters");
-		lblFilters.setBounds(24, 373, 152, 15);
+		lblFilters.setBounds(24, 404, 152, 15);
 		contentPanel.add(lblFilters);
 
 		JButton btnAddFilter = new JButton("Add filter");
 		btnAddFilter.setFont(new Font("Dialog", Font.BOLD, 10));
-		btnAddFilter.setBounds(339, 388, 129, 25);
+		btnAddFilter.setBounds(339, 420, 129, 25);
 		btnAddFilter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -283,7 +288,7 @@ public class OptionsDialog extends JDialog {
 
 		JButton btnRemoveFilter = new JButton("Remove filter");
 		btnRemoveFilter.setFont(new Font("Dialog", Font.BOLD, 10));
-		btnRemoveFilter.setBounds(339, 451, 129, 25);
+		btnRemoveFilter.setBounds(339, 479, 129, 25);
 		btnRemoveFilter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -292,6 +297,21 @@ public class OptionsDialog extends JDialog {
 			}
 		});
 		contentPanel.add(btnRemoveFilter);
+
+		JButton probeButton = new JButton("Probe");
+		probeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					ProbeClient.send();
+				} catch (IOException e1) {
+					showError("Error during probe: " + e1.getMessage());
+				}
+			}
+		});
+		probeButton.setFont(new Font("Dialog", Font.BOLD, 11));
+		probeButton.setBounds(339, 341, 129, 25);
+		contentPanel.add(probeButton);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -316,6 +336,7 @@ public class OptionsDialog extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
+						Settings.getInstance().removeListener(OptionsDialog.this);
 						setVisible(false);
 						dispose();
 					}
@@ -360,27 +381,32 @@ public class OptionsDialog extends JDialog {
 		}
 	}
 
+	private void showError(String msg) {
+		JOptionPane.showMessageDialog(this, "Timeout parameter must be a number between 1000 and 60000 milliseconds",
+				getTitle(), JOptionPane.ERROR_MESSAGE);
+	}
+
 	private boolean onExit() {
 		int time = 0;
 		Settings s = Settings.getInstance();
 
+		s.removeListener(this);
 		try {
 			time = Integer.parseInt(timeoutField.getText());
 		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this,
-					"Timeout parameter must be a number between 1000 and 60000 milliseconds");
+			showError("Timeout parameter must be a number between 1000 and 60000 milliseconds");
 			return false;
 		}
 
 		File f = new File(downloadPathField.getText());
 		if (!f.exists() || !f.canWrite()) {
-			JOptionPane.showMessageDialog(this, "Download path cannot be empty and it must be writeable");
+			showError("Download path cannot be empty and it must be writeable");
 			return false;
 		}
 
 		f = new File(iconField.getText());
 		if (!f.exists() || !f.canRead()) {
-			JOptionPane.showMessageDialog(this, "Icon cannot be empty and it must be readable");
+			showError("Icon cannot be empty and it must be readable");
 			return false;
 		}
 
@@ -403,5 +429,16 @@ public class OptionsDialog extends JDialog {
 		s.setName(pcNameField.getText());
 		s.setTimeout(time);
 		return true;
+	}
+
+	@Override
+	public void preferenceChange(PreferenceChangeEvent evt) {
+		if (evt.getKey().startsWith(Settings.DEVICES)) {
+			listModel.removeAllElements();
+			List<Device> devices = Settings.getInstance().getDevices();
+			for (Device d : devices) {
+				listModel.addElement(d);
+			}
+		}
 	}
 }

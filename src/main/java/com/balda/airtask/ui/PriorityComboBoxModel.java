@@ -47,6 +47,12 @@ class PriorityComboBoxModel extends DefaultComboBoxModel<Device> {
 	}
 
 	@Override
+	public void removeAllElements() {
+		super.removeAllElements();
+		setSelectedItem(null);
+	}
+
+	@Override
 	public void addElement(Device element) {
 		insertElementAt(element, 0);
 	}
@@ -70,7 +76,7 @@ class PriorityComboBoxModel extends DefaultComboBoxModel<Device> {
 				break;
 		}
 		super.insertElementAt(element, index);
-		if (element != null && element.isDefault()) {
+		if (element != null && (element.isDefault() || getSize() == 1)) {
 			setSelectedItem(element);
 		}
 	}

@@ -99,10 +99,16 @@ public class FilterDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						if (regexField.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(FilterDialog.this, "Invalid regular expression", getTitle(),
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
 						try {
 							Pattern.compile(regexField.getText());
 						} catch (PatternSyntaxException exception) {
-							JOptionPane.showMessageDialog(FilterDialog.this, "Invalid regular expression");
+							JOptionPane.showMessageDialog(FilterDialog.this, "Invalid regular expression", getTitle(),
+									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 						filter = new NotificationFilter(((Device) targetDeviceText.getSelectedItem()).getName(),

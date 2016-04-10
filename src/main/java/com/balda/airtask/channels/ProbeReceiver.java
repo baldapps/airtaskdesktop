@@ -23,63 +23,83 @@ import java.io.DataOutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Random;
 
 import com.balda.airtask.Settings;
 
 public class ProbeReceiver extends Thread {
-    private MulticastSocket socket;
-    private volatile boolean shouldRestartSocketListen = true;
-    public static final String PROBE_ADDR = "226.0.0.1";
-    public static final int PROBE_PORT = 9879;
-    public static final int REGISTRATION_PORT = 9878;
+	private MulticastSocket socket;
+	private volatile boolean shouldRestartSocketListen = true;
+	public static final String PROBE_ADDR = "226.0.0.1";
+	public static final int PROBE_PORT = 9879;
+	public static final int REGISTRATION_PORT = 9878;
 
-    public ProbeReceiver() {
-    }
+	public ProbeReceiver() {
+	}
 
-    private void listen() throws Exception {
-        byte[] buf = new byte[65535];
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
-        InetAddress sender = packet.getAddress();
-        Random r = new Random();
-        Thread.sleep(r.nextInt(10) * 1000);
-        Socket s = new Socket(sender, REGISTRATION_PORT);
-        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-        try {
-            dos.writeUTF(Settings.getInstance().getName());
-            dos.writeUTF(s.getLocalAddress().getHostAddress());
-        } finally {
-            dos.close();
-            s.close();
-        }
-    }
+	private boolean isSentByMe(DatagramPacket packet) throws SocketException {
+		Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+		for (NetworkInterface netint : Collections.list(nets)) {
+			Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+			for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+				if (inetAddress.getHostAddress().equals(packet.getAddress().getHostAddress()))
+					return true;
+			}
+		}
+		return false;
+	}
 
-    @Override
-    public void run() {
-        InetAddress multiCastIP;
-        try {
-            multiCastIP = InetAddress.getByName(PROBE_ADDR);
-            if (socket == null || socket.isClosed()) {
-                socket = new MulticastSocket(PROBE_PORT);
-                socket.joinGroup(multiCastIP);
-            }
-        } catch (Exception e) {
-            return;
-        }
-        while (shouldRestartSocketListen) {
-            try {
-                listen();
-            } catch (Exception ignored) {
-            }
-        }
-        if (!socket.isClosed())
-            socket.close();
-    }
+	private void listen() throws Exception {
+		byte[] buf = new byte[65535];
+		DatagramPacket packet = new DatagramPacket(buf, buf.length);
+		socket.receive(packet);
+		if (isSentByMe(packet)) {
+			System.out.println("sent by me!!");
+			return;
+		}
+		InetAddress sender = packet.getAddress();
+		Random r = new Random();
+		Thread.sleep(r.nextInt(10) * 1000);
+		Socket s = new Socket(sender, REGISTRATION_PORT);
+		DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+		try {
+			dos.writeUTF(Settings.getInstance().getName());
+			dos.writeUTF(s.getLocalAddress().getHostAddress());
+		} finally {
+			dos.close();
+			s.close();
+		}
+	}
 
-    public void quit() {
-        socket.close();
-        shouldRestartSocketListen = false;
-    }
+	@Override
+	public void run() {
+		InetAddress multiCastIP;
+		try {
+			multiCastIP = InetAddress.getByName(PROBE_ADDR);
+			if (socket == null || socket.isClosed()) {
+				socket = new MulticastSocket(PROBE_PORT);
+				socket.joinGroup(multiCastIP);
+			}
+		} catch (Exception e) {
+			return;
+		}
+		while (shouldRestartSocketListen) {
+			try {
+				listen();
+			} catch (Exception ignored) {
+			}
+		}
+		if (!socket.isClosed())
+			socket.close();
+	}
+
+	public void quit() {
+		socket.close();
+		shouldRestartSocketListen = false;
+	}
 }

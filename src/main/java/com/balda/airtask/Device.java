@@ -67,26 +67,27 @@ public class Device implements Comparable<Device>, Serializable {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		if (!Device.class.isAssignableFrom(obj.getClass())) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		final Device other = (Device) obj;
-		if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+		Device other = (Device) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equalsIgnoreCase(other.name))
 			return false;
-		}
-		if (!name.equals(other.name)) {
-			return false;
-		}
-		if ((this.address == null) ? (other.address != null) : !this.address.equals(other.address)) {
-			return false;
-		}
-		if (!address.equals(other.address)) {
-			return false;
-		}
 		return true;
 	}
 
