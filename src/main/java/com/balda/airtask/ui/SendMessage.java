@@ -62,6 +62,7 @@ import javax.swing.WindowConstants;
 
 import com.balda.airtask.Device;
 import com.balda.airtask.Settings;
+import com.balda.airtask.channels.ChannelManager;
 import com.balda.airtask.channels.TransferManager;
 
 public class SendMessage extends javax.swing.JFrame implements PreferenceChangeListener {
@@ -128,6 +129,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 				tray.remove(icon);
 				setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				dispose();
+				ChannelManager.getInstance().stop();
 				System.exit(0);
 			}
 		});

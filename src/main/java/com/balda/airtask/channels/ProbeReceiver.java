@@ -39,7 +39,7 @@ public class ProbeReceiver extends Thread {
 	public static final int PROBE_PORT = 9879;
 	public static final int REGISTRATION_PORT = 9878;
 
-	public ProbeReceiver() {
+	ProbeReceiver() {
 	}
 
 	private boolean isSentByMe(DatagramPacket packet) throws SocketException {

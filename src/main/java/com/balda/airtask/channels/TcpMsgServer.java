@@ -20,6 +20,7 @@
 package com.balda.airtask.channels;
 
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -32,15 +33,16 @@ import com.google.gson.Gson;
 public class TcpMsgServer extends Thread {
 
 	private ServerSocket socket;
+	private volatile boolean quit = false;
 	public static final int PORT = 9876;
 
-	public TcpMsgServer() {
+	TcpMsgServer() {
 	}
 
-    private void listen() throws Exception {
-        Socket client = socket.accept();
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-        String payload = dis.readUTF();
+	private void listen() throws Exception {
+		Socket client = socket.accept();
+		DataInputStream dis = new DataInputStream(client.getInputStream());
+		String payload = dis.readUTF();
 		Message m = new Gson().fromJson(payload, Message.class);
 		if (m.getUserMessage() != null && m.getFromDevice() != null) {
 			String from = m.getFromDevice();
@@ -56,21 +58,30 @@ public class TcpMsgServer extends Thread {
 				NotifierFactory.getNotifier().notify(msg, from);
 			}
 		}
-    }
+	}
 
 	@Override
 	public void run() {
 		try {
-            socket = new ServerSocket(PORT);
-            socket.setReuseAddress(true);
-        } catch (Exception e) {
-            return;
-        }
-        while (true) {
-            try {
-                listen();
-            } catch (Exception ignored) {
-            }
-        }
+			socket = new ServerSocket(PORT);
+			socket.setReuseAddress(true);
+		} catch (Exception e) {
+			return;
+		}
+		while (!quit) {
+			try {
+				listen();
+			} catch (Exception ignored) {
+			}
+		}
+	}
+
+	public void quit() {
+		quit = true;
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

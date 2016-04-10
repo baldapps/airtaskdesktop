@@ -26,11 +26,8 @@ import java.util.List;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.balda.airtask.channels.ProbeReceiver;
-import com.balda.airtask.channels.RegistrationServer;
-import com.balda.airtask.channels.TcpMsgServer;
+import com.balda.airtask.channels.ChannelManager;
 import com.balda.airtask.channels.TransferManager;
-import com.balda.airtask.channels.TransferServer;
 import com.balda.airtask.ui.SendMessage;
 
 public class AirTask {
@@ -165,14 +162,6 @@ public class AirTask {
 		});
 
 		ClipboardListener.getInstance().init();
-		TcpMsgServer s;
-		s = new TcpMsgServer();
-		s.start();
-		TransferServer serv = new TransferServer();
-		serv.start();
-		ProbeReceiver p = new ProbeReceiver();
-		p.start();
-		RegistrationServer reg = new RegistrationServer();
-		reg.start();
+		ChannelManager.getInstance().start();
 	}
 }

@@ -34,7 +34,7 @@ public class RegistrationServer extends Thread {
 	private ServerSocket socket;
 	private volatile boolean running;
 
-	public RegistrationServer() {
+	RegistrationServer() {
 		try {
 			socket = new ServerSocket(REGISTRATION_PORT);
 			socket.setReuseAddress(true);

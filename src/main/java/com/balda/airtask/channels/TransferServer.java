@@ -36,7 +36,7 @@ public class TransferServer extends Thread {
 	private ServerSocket socket;
 	private volatile boolean running;
 
-	public TransferServer() {
+	TransferServer() {
 		try {
 			socket = new ServerSocket(TRANSFER_PORT);
 		} catch (IOException ignored) {
