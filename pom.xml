@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.balda.airtask</groupId>
 	<artifactId>airtaskdesktop</artifactId>
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 	<name>AirTask Desktop</name>
 	<description>AirTask Desktop client</description>
 	<organization>
