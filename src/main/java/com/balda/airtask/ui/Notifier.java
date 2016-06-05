@@ -35,7 +35,7 @@ public abstract class Notifier implements PreferenceChangeListener {
 	private List<NotificationFilter> filters;
 
 	public Notifier() {
-		show = true;
+		show = Settings.getInstance().showNotifications();
 		filters = Settings.getInstance().getFilters();
 		Settings.getInstance().addListener(this);
 	}
