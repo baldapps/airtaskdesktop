@@ -328,7 +328,8 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 		if (lastErr != null) {
 			JOptionPane.showMessageDialog(this, "An error occured during transfer: " + lastErr, "AirTask",
 					JOptionPane.ERROR_MESSAGE);
-		}
+		} else
+			messageArea.setText("");
 	}
 
 	private void sendMessageMouseClicked(java.awt.event.MouseEvent evt) {
