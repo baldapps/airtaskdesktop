@@ -37,8 +37,9 @@ public class AirTask {
 	private static void processClip(Parameters params) {
 		List<Device> devices = Settings.getInstance().getDevices();
 		if (params.getDevice() != null) {
-			if (devices.contains(params.getDevice())) {
-				ClipboardListener.getInstance().pasteClipboard(devices.get(devices.indexOf(params.getDevice())));
+			Device tmp = new Device(params.getDevice(), "", false);
+			if (devices.contains(tmp)) {
+				ClipboardListener.getInstance().pasteClipboard(devices.get(devices.indexOf(tmp)));
 				System.exit(0);
 			} else {
 				System.err.println("Device not found");
@@ -61,8 +62,9 @@ public class AirTask {
 		File file = new File(params.getFile());
 		List<Device> devices = Settings.getInstance().getDevices();
 		if (params.getDevice() != null) {
-			if (devices.contains(params.getDevice())) {
-				TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(params.getDevice())), false);
+			Device tmp = new Device(params.getDevice(), "", false);
+			if (devices.contains(tmp)) {
+				TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(tmp)), false);
 				System.exit(0);
 			} else {
 				System.err.println("Device not found");
@@ -85,9 +87,9 @@ public class AirTask {
 		List<Device> devices = Settings.getInstance().getDevices();
 		try {
 			if (params.getDevice() != null) {
-				if (devices.contains(params.getDevice())) {
-					TransferManager.getInstance().sendMessage(params.getMessage(),
-							devices.get(devices.indexOf(params.getDevice())));
+				Device tmp = new Device(params.getDevice(), "", false);
+				if (devices.contains(tmp)) {
+					TransferManager.getInstance().sendMessage(params.getMessage(), devices.get(devices.indexOf(tmp)));
 					System.exit(0);
 				} else {
 					System.err.println("Device not found");
