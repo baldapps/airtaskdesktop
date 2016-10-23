@@ -54,12 +54,27 @@ public class ProbeReceiver extends Thread {
 		return false;
 	}
 
+	private String getMacAddress(InetAddress ip) {
+		String address = null;
+		try {
+			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+			byte[] mac = network.getHardwareAddress();
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < mac.length; i++) {
+				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
+			}
+			address = sb.toString();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		return address;
+	}
+
 	private void listen() throws Exception {
 		byte[] buf = new byte[65535];
 		DatagramPacket packet = new DatagramPacket(buf, buf.length);
 		socket.receive(packet);
 		if (isSentByMe(packet)) {
-			System.out.println("sent by me!!");
 			return;
 		}
 		InetAddress sender = packet.getAddress();
@@ -67,9 +82,12 @@ public class ProbeReceiver extends Thread {
 		Thread.sleep(r.nextInt(10) * 1000);
 		Socket s = new Socket(sender, REGISTRATION_PORT);
 		DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+		String mac = getMacAddress(s.getLocalAddress());
 		try {
 			dos.writeUTF(Settings.getInstance().getName());
 			dos.writeUTF(s.getLocalAddress().getHostAddress());
+			if (mac != null)
+				dos.writeUTF(mac);
 		} finally {
 			dos.close();
 			s.close();
