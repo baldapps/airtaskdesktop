@@ -192,6 +192,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 
 		messageArea.setColumns(20);
 		messageArea.setRows(5);
+		messageArea.addMouseListener(new RightClickMouseAdapter(messageArea));
 		jScrollPane1.setViewportView(messageArea);
 
 		jLabel1.setText("Target device");
