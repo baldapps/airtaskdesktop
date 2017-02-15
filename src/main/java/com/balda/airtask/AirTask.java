@@ -40,7 +40,6 @@ public class AirTask {
 			Device tmp = new Device(params.getDevice(), "", false);
 			if (devices.contains(tmp)) {
 				ClipboardListener.getInstance().pasteClipboard(devices.get(devices.indexOf(tmp)));
-				System.exit(0);
 			} else {
 				System.err.println("Device not found");
 				System.exit(1);
@@ -49,7 +48,6 @@ public class AirTask {
 		} else {
 			if (devices.size() > 0 && devices.get(0).isDefault()) {
 				ClipboardListener.getInstance().pasteClipboard(devices.get(devices.indexOf(params.getDevice())));
-				System.exit(0);
 			} else {
 				System.err.println("Device not found");
 				System.exit(1);
@@ -65,7 +63,6 @@ public class AirTask {
 			Device tmp = new Device(params.getDevice(), "", false);
 			if (devices.contains(tmp)) {
 				TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(tmp)), false);
-				System.exit(0);
 			} else {
 				System.err.println("Device not found");
 				System.exit(1);
@@ -73,8 +70,7 @@ public class AirTask {
 			}
 		} else {
 			if (devices.size() > 0 && devices.get(0).isDefault()) {
-				TransferManager.getInstance().sendFile(file, devices.get(devices.indexOf(params.getDevice())), false);
-				System.exit(0);
+				TransferManager.getInstance().sendFile(file, devices.get(0), false);
 			} else {
 				System.err.println("Device not found");
 				System.exit(1);
@@ -90,7 +86,6 @@ public class AirTask {
 				Device tmp = new Device(params.getDevice(), "", false);
 				if (devices.contains(tmp)) {
 					TransferManager.getInstance().sendMessage(params.getMessage(), devices.get(devices.indexOf(tmp)));
-					System.exit(0);
 				} else {
 					System.err.println("Device not found");
 					System.exit(1);
@@ -99,7 +94,6 @@ public class AirTask {
 			} else {
 				if (devices.size() > 0 && devices.get(0).isDefault()) {
 					TransferManager.getInstance().sendMessage(params.getMessage(), devices.get(0));
-					System.exit(0);
 				} else {
 					System.err.println("Device not found");
 					System.exit(1);
@@ -128,10 +122,13 @@ public class AirTask {
 
 		if (params.sendClip()) {
 			processClip(params);
+			return;
 		} else if (params.getFile() != null) {
 			processFile(params);
+			return;
 		} else if (params.getMessage() != null) {
 			processMessage(params);
+			return;
 		}
 
 		try {
