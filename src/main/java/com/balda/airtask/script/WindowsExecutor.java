@@ -30,7 +30,7 @@ public class WindowsExecutor extends ScriptExecutor {
 	@Override
 	public void onFileReceived(String from, String path) {
 		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c",
-				root + "\\fileReceived.bat" + " \"" + from + "\"" + " \"" + path + "\"");
+				"\"\"" + root + "\\fileReceived.bat\"" + " \"" + from + "\"" + " \"" + path + "\"\"");
 		try {
 			pb.start();
 		} catch (IOException e) {
@@ -41,7 +41,7 @@ public class WindowsExecutor extends ScriptExecutor {
 	@Override
 	public void onMessageReceived(String from, String msg) {
 		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c",
-				root + "\\messageReceived.bat" + " \"" + from + "\"" + " \"" + msg + "\"");
+				"\"\"" + root + "\\messageReceived.bat\"" + " \"" + from + "\"" + " \"" + msg + "\"\"");
 		try {
 			pb.start();
 		} catch (IOException e) {
