@@ -26,8 +26,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import com.balda.airtask.Device;
-import com.balda.airtask.Settings;
 import com.balda.airtask.json.Message;
+import com.balda.airtask.settings.Settings;
 import com.google.gson.Gson;
 
 public class TransferManager {

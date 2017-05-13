@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
-import com.balda.airtask.Settings;
+import com.balda.airtask.settings.Settings;
 
 public abstract class Notifier implements PreferenceChangeListener {
 

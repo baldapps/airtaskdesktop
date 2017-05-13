@@ -55,8 +55,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.NumberFormatter;
 
 import com.balda.airtask.Device;
-import com.balda.airtask.Settings;
 import com.balda.airtask.channels.ProbeClient;
+import com.balda.airtask.settings.Settings;
 
 public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 
@@ -382,15 +382,13 @@ public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 	}
 
 	private void showError(String msg) {
-		JOptionPane.showMessageDialog(this, "Timeout parameter must be a number between 1000 and 60000 milliseconds",
-				getTitle(), JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(this, msg, getTitle(), JOptionPane.ERROR_MESSAGE);
 	}
 
 	private boolean onExit() {
 		int time = 0;
 		Settings s = Settings.getInstance();
 
-		s.removeListener(this);
 		try {
 			time = Integer.parseInt(timeoutField.getText());
 		} catch (NumberFormatException e) {
@@ -410,6 +408,7 @@ public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 			return false;
 		}
 
+		s.removeListener(this);
 		int size = listModel.getSize();
 		ArrayList<Device> list = new ArrayList<>();
 		for (int i = 0; i < size; i++) {

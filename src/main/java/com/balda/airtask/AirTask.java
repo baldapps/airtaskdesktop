@@ -26,8 +26,10 @@ import java.util.List;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import com.balda.airtask.assistant.api.AssistantManager;
 import com.balda.airtask.channels.ChannelManager;
 import com.balda.airtask.channels.TransferManager;
+import com.balda.airtask.settings.Settings;
 import com.balda.airtask.ui.SendMessage;
 
 public class AirTask {
@@ -162,5 +164,7 @@ public class AirTask {
 
 		ClipboardListener.getInstance().init();
 		ChannelManager.getInstance().start();
+		AssistantManager.getInstance().init();
+
 	}
 }

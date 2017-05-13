@@ -33,7 +33,7 @@ import java.net.SocketException;
 import javax.swing.JOptionPane;
 
 import com.balda.airtask.AirTask;
-import com.balda.airtask.Settings;
+import com.balda.airtask.settings.Settings;
 
 public class TransferClient extends Thread {
 

@@ -64,5 +64,21 @@
             <source>${project.basedir}/src/main/resources/launch-linux</source>
             <fileMode>0755</fileMode>
         </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/assistantRequest</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/assistantRequest.bat</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/assistantReply</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/assistantReply.bat</source>
+            <fileMode>0755</fileMode>
+        </file>
     </files>
 </assembly>

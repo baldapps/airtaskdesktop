@@ -24,7 +24,7 @@ import java.io.IOException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import com.balda.airtask.Settings;
+import com.balda.airtask.settings.Settings;
 
 public class BuiltinNotifier extends Notifier {
 

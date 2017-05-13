@@ -54,4 +54,8 @@ public abstract class ScriptExecutor {
 	public abstract void onFileReceived(String from, String path);
 
 	public abstract void onMessageReceived(String from, String msg);
+
+	public abstract void onAssistantRequest(String msg);
+
+	public abstract void onAssistantReply(String msg);
 }

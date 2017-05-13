@@ -61,9 +61,9 @@ import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import com.balda.airtask.Device;
-import com.balda.airtask.Settings;
 import com.balda.airtask.channels.ChannelManager;
 import com.balda.airtask.channels.TransferManager;
+import com.balda.airtask.settings.Settings;
 
 public class SendMessage extends javax.swing.JFrame implements PreferenceChangeListener {
 
@@ -133,7 +133,16 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 				System.exit(0);
 			}
 		});
+		MenuItem item3 = new MenuItem("Assistant");
+		item3.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SpeechRecognizer frame = new SpeechRecognizer();
+				frame.setVisible(true);
+			}
+		});
 		popup.add(cb1);
+		popup.add(item3);
 		popup.addSeparator();
 		popup.add(item1);
 		popup.add(item2);
@@ -160,7 +169,7 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 		setupTray();
 
 		JMenu menu = new JMenu("Options");
-		JMenuItem menuItem = new JMenuItem("Options");
+		JMenuItem menuItem = new JMenuItem("Generic options");
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -168,9 +177,19 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 				odiag.setVisible(true);
 			}
 		});
+		JMenuItem menuItem2 = new JMenuItem("Assistant options");
+		menuItem2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				AssistantOptionsDialog odiag = new AssistantOptionsDialog();
+				odiag.setVisible(true);
+			}
+		});
 		menu.setMnemonic(KeyEvent.VK_O);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+		menuItem2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK));
 		menu.add(menuItem);
+		menu.add(menuItem2);
 		menuBar.add(menu);
 		setJMenuBar(menuBar);
 

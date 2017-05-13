@@ -31,6 +31,7 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
 import com.balda.airtask.channels.TransferManager;
+import com.balda.airtask.settings.Settings;
 
 public class ClipboardListener implements ClipboardOwner, PreferenceChangeListener {
 

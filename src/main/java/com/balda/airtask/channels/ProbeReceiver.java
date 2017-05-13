@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Random;
 
-import com.balda.airtask.Settings;
+import com.balda.airtask.settings.Settings;
 
 public class ProbeReceiver extends Thread {
 	private MulticastSocket socket;

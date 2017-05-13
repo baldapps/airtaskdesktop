@@ -26,7 +26,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import com.balda.airtask.Device;
-import com.balda.airtask.Settings;
+import com.balda.airtask.settings.Settings;
 
 public class RegistrationServer extends Thread {
 

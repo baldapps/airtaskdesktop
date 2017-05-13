@@ -39,7 +39,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.balda.airtask.Device;
-import com.balda.airtask.Settings;
+import com.balda.airtask.settings.Settings;
 
 public class FilterDialog extends JDialog {
 

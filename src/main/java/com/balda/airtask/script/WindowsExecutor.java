@@ -48,4 +48,26 @@ public class WindowsExecutor extends ScriptExecutor {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void onAssistantRequest(String msg) {
+		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c",
+				"\"\"" + root + "\\assistantRequest.bat\"" + " \"" + msg + "\"\"");
+		try {
+			pb.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onAssistantReply(String msg) {
+		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c",
+				"\"\"" + root + "\\assistantReply.bat\"" + " \"" + msg + "\"\"");
+		try {
+			pb.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

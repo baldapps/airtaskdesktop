@@ -5,7 +5,7 @@ AirTask uses the multicast address 226.0.0.1 port 9879 to receive device info.
 In addition, the port 9876, 9877 and 9878 must be open in your firewall in order to
 receive files and messages.
 
-It could be needed to give execute permissions to the launch scripts. 
+It could be needed to give execute permissions to the launch scripts.
 
 ##How to start the software##
 
@@ -60,3 +60,44 @@ AirTask can be invoked from command line using the following arguments:
 -f FILE: To transfer a file using its path
 -m MESSAGE: To transfer a message
 -clip: To copy the pc clipboard to a device selected with -d or the default one
+
+##Network problems##
+AirTask uses fixed IP addressing so if you have a router with DHCP you need to use
+the address reservation in order to keep fix the MAC of your phone/tablet with the
+IP address used. Sometimes it can happen that when the screen is off, the messages
+are not delivered. Most of times depends on ARP cache, when the screen off most of
+devices don't reply anymore to ARP requests. To overcome this problem you need
+to set a static entry in the ARP cache of your router or pc.
+
+##Google Assistant integration##
+In order to use the Google Assistant you need to provide two information:
+-Client id
+-Client secret
+
+Follow these steps:
+1) Go to the Projects page (https://console.cloud.google.com/project)
+in the Google Cloud Platform Console.
+2) Click on “Create Project” up top.
+3) Name the Project “My Google Assistant” and click “Create.”
+4) Wait a few seconds for the Console to create your new Project. You should see a
+spinning progress icon in the top right. After it is done creating your Project, 
+you will be brought to your Project’s configuration page.
+5) Click using this link (https://console.developers.google.com/apis/api/embeddedassistant.googleapis.com/overview)
+to go straight to the Google Assistant API page. Up top, click “Enable.”
+6) Google will warn you that you need to create credentials to use this API. Click 
+“Create credentials” in the top right. This will take you to a setup wizard page where 
+Google helps you figure out what kind of credentials you need to use this API.
+7) Under “where will you be calling the API from”, select “Other UI (e.g. Windows, CLI tool)“.
+For “what data will you be accessing” select the “User data” circle. Now tap 
+“what credentials do I need?” Google should recommend that you create an OAuth 2.0 client ID. 
+8) Name the Client ID anything you want, for example, your name + Desktop. 
+9) Once done picking a name, click “create client ID.”
+10) Under “product name shown to users” enter “My Google Assistant.” Click continue.
+11) Click “done.” There’s no need to click download here as we only need the client secret,
+which we will download next. Now under the list of OAuth 2.0 client IDs, you should see the 
+client ID you just made. All the way to the right, click on the download icon to download
+the client_secret_XXX.json file, where ‘XXX’ is your client ID.
+12) Save this file anywhere on your computer, ideally in a new folder called “googleassistant.”
+13) Go to the Activity controls page for your Google account and make sure that “Web & App Activity”,
+“Location History”, “Device Information”, and “Voice & Audio Activity” are enabled.
+14) Open the file downloaded and copy the client id and the client secret in the AirTask parameters.

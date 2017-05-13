@@ -21,7 +21,7 @@ package com.balda.airtask.ui;
 
 import java.io.IOException;
 
-import com.balda.airtask.Settings;
+import com.balda.airtask.settings.Settings;
 
 public class LinuxNotifier extends Notifier {
 

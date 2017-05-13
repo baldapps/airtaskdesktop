@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.balda.airtask.Settings;
 import com.balda.airtask.script.ScriptFactory;
+import com.balda.airtask.settings.Settings;
 import com.balda.airtask.ui.NotifierFactory;
 
 public class TransferServer extends Thread {

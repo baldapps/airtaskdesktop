@@ -45,4 +45,24 @@ public class MacExecutor extends ScriptExecutor {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void onAssistantRequest(String msg) {
+		ProcessBuilder pb = new ProcessBuilder("/bin/bash", root + "/assistantRequest", msg);
+		try {
+			pb.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onAssistantReply(String msg) {
+		ProcessBuilder pb = new ProcessBuilder("/bin/bash", root + "/assistantReply", msg);
+		try {
+			pb.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
