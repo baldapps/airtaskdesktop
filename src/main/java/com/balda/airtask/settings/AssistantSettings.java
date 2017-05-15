@@ -25,6 +25,7 @@ public class AssistantSettings extends SettingsProvider {
 	public static final String CLIENT_SECRET = "client_secret";
 	public static final String CLIENT_AUTH_CODE = "client_auth_code";
 	public static final String ASSISTANT_VOLUME = "assistant_volume";
+	public static final String ALWAYS_ON = "always_on";
 
 	public static final int DEF_ASSISTANT_VOLUME = 50;
 	private static final AssistantSettings instance = new AssistantSettings();
@@ -52,6 +53,10 @@ public class AssistantSettings extends SettingsProvider {
 		return prefs.getInt(ASSISTANT_VOLUME, DEF_ASSISTANT_VOLUME);
 	}
 
+	public boolean isAlwaysOn() {
+		return prefs.getBoolean(ALWAYS_ON, false);
+	}
+
 	public void setClientId(String id) {
 		prefs.put(CLIENT_ID, id);
 	}
@@ -66,5 +71,9 @@ public class AssistantSettings extends SettingsProvider {
 
 	public void setVolume(int v) {
 		prefs.putInt(ASSISTANT_VOLUME, v);
+	}
+
+	public void setAlwaysOn(boolean s) {
+		prefs.putBoolean(ALWAYS_ON, s);
 	}
 }

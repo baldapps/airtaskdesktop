@@ -165,6 +165,11 @@ public class AirTask {
 		ClipboardListener.getInstance().init();
 		ChannelManager.getInstance().start();
 		AssistantManager.getInstance().init();
+	}
 
+	public static void shutdown() {
+		AssistantManager.getInstance().shutdown();
+		ChannelManager.getInstance().stop();
+		System.exit(0);
 	}
 }

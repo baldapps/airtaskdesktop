@@ -29,14 +29,13 @@ import java.util.prefs.PreferenceChangeListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.NumberFormatter;
 
 import com.balda.airtask.settings.AssistantSettings;
 import com.balda.airtask.settings.Settings;
@@ -48,16 +47,17 @@ public class AssistantOptionsDialog extends JDialog implements PreferenceChangeL
 	 */
 	private static final long serialVersionUID = -7524032380144298523L;
 	private final JPanel contentPanel = new JPanel();
-	private JFormattedTextField clientId;
+	private JTextField clientId;
 	private JTextField clientSecret;
 	private JSlider slider;
+	private JCheckBox chckbxAlwaysOn;
 
 	/**
 	 * Create the dialog.
 	 */
 	public AssistantOptionsDialog() {
 		Settings.getInstance().addListener(this);
-		setBounds(100, 100, 480, 222);
+		setBounds(100, 100, 520, 281);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setTitle("Assistant options");
 		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
@@ -73,33 +73,31 @@ public class AssistantOptionsDialog extends JDialog implements PreferenceChangeL
 
 		NumberFormat format = NumberFormat.getInstance();
 		format.setGroupingUsed(false);
-		NumberFormatter formatter = new NumberFormatter(format);
-		formatter.setValueClass(Integer.class);
-		formatter.setMinimum(1000);
-		formatter.setMaximum(60000);
-		formatter.setAllowsInvalid(true);
-		formatter.setCommitsOnValidEdit(false);
-		clientId = new JFormattedTextField(formatter);
-		clientId.setBounds(24, 25, 440, 25);
+		clientId = new JTextField();
+		clientId.setBounds(24, 25, 480, 30);
 		contentPanel.add(clientId);
 		clientId.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("Client secret");
-		lblNewLabel_1.setBounds(24, 55, 125, 15);
+		lblNewLabel_1.setBounds(24, 64, 125, 15);
 		contentPanel.add(lblNewLabel_1);
 
 		clientSecret = new JTextField();
-		clientSecret.setBounds(24, 71, 440, 25);
+		clientSecret.setBounds(24, 79, 480, 30);
 		contentPanel.add(clientSecret);
 		clientSecret.setColumns(10);
 
 		slider = new JSlider(0, 100);
-		slider.setBounds(24, 122, 200, 16);
+		slider.setBounds(24, 138, 200, 16);
 		contentPanel.add(slider);
 
 		JLabel lblAssistantVolume = new JLabel("Assistant volume");
-		lblAssistantVolume.setBounds(24, 106, 125, 15);
+		lblAssistantVolume.setBounds(24, 121, 125, 15);
 		contentPanel.add(lblAssistantVolume);
+
+		chckbxAlwaysOn = new JCheckBox("Always on");
+		chckbxAlwaysOn.setBounds(24, 162, 129, 23);
+		contentPanel.add(chckbxAlwaysOn);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -142,6 +140,7 @@ public class AssistantOptionsDialog extends JDialog implements PreferenceChangeL
 		clientId.setText(s.getClientId());
 		clientSecret.setText(s.getClientSecret());
 		slider.setValue(s.getVolume());
+		chckbxAlwaysOn.setSelected(s.isAlwaysOn());
 	}
 
 	private boolean onExit() {
@@ -150,6 +149,7 @@ public class AssistantOptionsDialog extends JDialog implements PreferenceChangeL
 		s.setClientId(clientId.getText());
 		s.setClientSecret(clientSecret.getText());
 		s.setVolume(slider.getValue());
+		s.setAlwaysOn(chckbxAlwaysOn.isSelected());
 		return true;
 	}
 
@@ -161,6 +161,8 @@ public class AssistantOptionsDialog extends JDialog implements PreferenceChangeL
 			clientSecret.setText(AssistantSettings.getInstance().getClientSecret());
 		} else if (evt.getKey().startsWith(AssistantSettings.ASSISTANT_VOLUME)) {
 			slider.setValue(AssistantSettings.getInstance().getVolume());
+		} else if (evt.getKey().startsWith(AssistantSettings.ALWAYS_ON)) {
+			chckbxAlwaysOn.setSelected(AssistantSettings.getInstance().isAlwaysOn());
 		}
 	}
 }

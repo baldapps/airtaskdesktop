@@ -55,7 +55,5 @@ public abstract class ScriptExecutor {
 
 	public abstract void onMessageReceived(String from, String msg);
 
-	public abstract void onAssistantRequest(String msg);
-
-	public abstract void onAssistantReply(String msg);
+	public abstract void onAssistantRequest(String req, String reply);
 }

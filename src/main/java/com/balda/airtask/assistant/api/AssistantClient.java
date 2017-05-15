@@ -22,6 +22,8 @@ package com.balda.airtask.assistant.api;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.balda.airtask.script.ScriptFactory;
 import com.balda.airtask.settings.AssistantSettings;
@@ -55,8 +57,10 @@ public class AssistantClient implements StreamObserver<ConverseResponse> {
 	private static final int AUDIO_SMAPLE_RATE = 16000;
 	// When we send audio, we split it in chunk, size of a chunk
 	private static final int CHUNK_SIZE = 1024;
+	private static final int REQUEST_TIMEOUT = 60000;
 	// Only one request can be active until it completes
 	private VoiceTransaction transaction;
+	private Timer timer;
 	private MicrophoneMode currentMode = MicrophoneMode.CLOSE_MICROPHONE;
 
 	/**
@@ -136,6 +140,16 @@ public class AssistantClient implements StreamObserver<ConverseResponse> {
 
 		// Mark the end of requests
 		requester.onCompleted();
+
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				if (transaction != null)
+					transaction.onError("Timeout");
+				transaction = null;
+			}
+		}, REQUEST_TIMEOUT);
 	}
 
 	@Override
@@ -151,12 +165,17 @@ public class AssistantClient implements StreamObserver<ConverseResponse> {
 
 				if (value.getResult().getSpokenRequestText() != null
 						&& !value.getResult().getSpokenRequestText().isEmpty()) {
-					ScriptFactory.getExecutor().onAssistantRequest(value.getResult().getSpokenRequestText());
+					System.out.println(value.getResult().getSpokenRequestText());
+					transaction.setUserInput(value.getResult().getSpokenRequestText());
 				}
 
 				if (value.getResult().getSpokenResponseText() != null
 						&& !value.getResult().getSpokenResponseText().isEmpty()) {
-					ScriptFactory.getExecutor().onAssistantReply(value.getResult().getSpokenResponseText());
+					transaction.setAssistantOutput(value.getResult().getSpokenResponseText());
+				}
+
+				if (value.getResult().getVolumePercentage() > 0) {
+					AssistantSettings.getInstance().setVolume(value.getResult().getVolumePercentage());
 				}
 			}
 		} catch (Exception e) {
@@ -165,17 +184,27 @@ public class AssistantClient implements StreamObserver<ConverseResponse> {
 
 	@Override
 	public void onError(Throwable t) {
-		transaction.onError(t.getLocalizedMessage());
+		if (timer != null)
+			timer.cancel();
+		if (transaction != null)
+			transaction.onError(t.getLocalizedMessage());
+		transaction = null;
 	}
 
 	@Override
 	public void onCompleted() {
-		transaction.onAudioReady(currentResponse.toByteArray());
-		if (currentMode == MicrophoneMode.DIALOG_FOLLOW_ON)
-			transaction.restart();
-		else {
-			transaction.complete();
-			transaction = null;
+		if (timer != null)
+			timer.cancel();
+		if (transaction != null) {
+			transaction.onAudioReady(currentResponse.toByteArray());
+			ScriptFactory.getExecutor().onAssistantRequest(transaction.getUserInput(),
+					transaction.getAssistantOutput());
+			if (currentMode == MicrophoneMode.DIALOG_FOLLOW_ON)
+				transaction.restart();
+			else {
+				transaction.complete();
+				transaction = null;
+			}
 		}
 	}
 

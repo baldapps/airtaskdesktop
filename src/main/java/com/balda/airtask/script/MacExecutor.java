@@ -47,18 +47,14 @@ public class MacExecutor extends ScriptExecutor {
 	}
 
 	@Override
-	public void onAssistantRequest(String msg) {
-		ProcessBuilder pb = new ProcessBuilder("/bin/bash", root + "/assistantRequest", msg);
-		try {
-			pb.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void onAssistantReply(String msg) {
-		ProcessBuilder pb = new ProcessBuilder("/bin/bash", root + "/assistantReply", msg);
+	public void onAssistantRequest(String req, String reply) {
+		if (req == null)
+			return;
+		ProcessBuilder pb;
+		if (reply != null && !reply.isEmpty())
+			pb = new ProcessBuilder("/bin/bash", root + "/assistantRequest", req, reply);
+		else
+			pb = new ProcessBuilder("/bin/bash", root + "/assistantRequest", req);
 		try {
 			pb.start();
 		} catch (IOException e) {

@@ -72,11 +72,11 @@ public class AuthorizationHelper implements PreferenceChangeListener {
 	}
 
 	/** Authorizes the installed application to access user's protected data. */
-	public void authorize() throws Exception {
+	public boolean authorize() throws Exception {
 		credChanged = false;
 
 		if (clientId.isEmpty() || clientSecret.isEmpty())
-			return;
+			return false;
 
 		// set up authorization code flow
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY,
@@ -85,6 +85,7 @@ public class AuthorizationHelper implements PreferenceChangeListener {
 						.setDataStoreFactory(dataStoreFactory).build();
 		// authorize
 		credentials = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+		return true;
 	}
 
 	public Credential getOAuthCredentials() {
@@ -99,8 +100,7 @@ public class AuthorizationHelper implements PreferenceChangeListener {
 	 */
 	public boolean refreshIfNeeededd() throws Exception {
 		if (credChanged) {
-			authorize();
-			return false;
+			return authorize();
 		}
 		if (credentials == null)
 			return false;

@@ -30,6 +30,8 @@ public class VoiceTransaction implements AudioReceiver {
 	private AssistantClient client;
 	private AudioPlayer player;
 	private AudioRecorder recorder;
+	private String userInput;
+	private String assistantOutput;
 
 	enum TransactionState {
 		IDLE, USER_INPUT, WAIT_FOR_REPLY, TERMINATED
@@ -105,5 +107,21 @@ public class VoiceTransaction implements AudioReceiver {
 	public void onError(String error) {
 		if (listener != null)
 			listener.onError(error);
+	}
+
+	public String getUserInput() {
+		return userInput;
+	}
+
+	public void setUserInput(String userInput) {
+		this.userInput = userInput;
+	}
+
+	public String getAssistantOutput() {
+		return assistantOutput;
+	}
+
+	public void setAssistantOutput(String assistantOutput) {
+		this.assistantOutput = assistantOutput;
 	}
 }

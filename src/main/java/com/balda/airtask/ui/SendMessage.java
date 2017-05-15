@@ -60,8 +60,9 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import com.balda.airtask.AirTask;
 import com.balda.airtask.Device;
-import com.balda.airtask.channels.ChannelManager;
+import com.balda.airtask.assistant.api.AssistantManager;
 import com.balda.airtask.channels.TransferManager;
 import com.balda.airtask.settings.Settings;
 
@@ -129,16 +130,14 @@ public class SendMessage extends javax.swing.JFrame implements PreferenceChangeL
 				tray.remove(icon);
 				setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				dispose();
-				ChannelManager.getInstance().stop();
-				System.exit(0);
+				AirTask.shutdown();
 			}
 		});
 		MenuItem item3 = new MenuItem("Assistant");
 		item3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SpeechRecognizer frame = new SpeechRecognizer();
-				frame.setVisible(true);
+				AssistantManager.getInstance().createSpeechReconizer();
 			}
 		});
 		popup.add(cb1);

@@ -50,20 +50,15 @@ public class WindowsExecutor extends ScriptExecutor {
 	}
 
 	@Override
-	public void onAssistantRequest(String msg) {
-		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c",
-				"\"\"" + root + "\\assistantRequest.bat\"" + " \"" + msg + "\"\"");
-		try {
-			pb.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void onAssistantReply(String msg) {
-		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c",
-				"\"\"" + root + "\\assistantReply.bat\"" + " \"" + msg + "\"\"");
+	public void onAssistantRequest(String req, String reply) {
+		if (req == null)
+			return;
+		ProcessBuilder pb;
+		if (reply != null && !reply.isEmpty())
+			pb = new ProcessBuilder("cmd.exe", "/c",
+					"\"\"" + root + "\\assistantRequest.bat\"" + " \"" + req + "\"" + " \"" + reply + "\"\"");
+		else
+			pb = new ProcessBuilder("cmd.exe", "/c", "\"\"" + root + "\\assistantRequest.bat\"" + " \"" + req + "\"\"");
 		try {
 			pb.start();
 		} catch (IOException e) {

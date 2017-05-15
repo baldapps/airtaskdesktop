@@ -22,7 +22,6 @@ package com.balda.airtask.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -39,10 +38,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.balda.airtask.assistant.api.AssistantManager;
+import com.balda.airtask.assistant.api.HotwordDetector;
+import com.balda.airtask.assistant.api.HotwordTrigger;
 import com.balda.airtask.assistant.api.VoiceTransaction;
 import com.balda.airtask.assistant.api.VoiceTransactionListener;
 
-public class SpeechRecognizer extends JFrame implements VoiceTransactionListener, WindowListener {
+public class SpeechRecognizer extends JFrame implements VoiceTransactionListener, WindowListener, HotwordTrigger {
 
 	/**
 	 * 
@@ -52,29 +53,13 @@ public class SpeechRecognizer extends JFrame implements VoiceTransactionListener
 	private VoiceTransaction currentTransaction;
 	private JLabel micLabel;
 	private JLabel talkStatus;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				AssistantManager.getInstance().init();
-				try {
-					SpeechRecognizer frame = new SpeechRecognizer();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private WindowClosedListener closeListener;
 
 	/**
 	 * Create the frame.
 	 */
-	public SpeechRecognizer() {
+	public SpeechRecognizer(WindowClosedListener c) {
+		closeListener = c;
 		setResizable(false);
 		addWindowListener(this);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -108,6 +93,12 @@ public class SpeechRecognizer extends JFrame implements VoiceTransactionListener
 		contentPane.add(talkStatus);
 		contentPane.add(micLabel);
 		contentPane.add(lblNewLabel_1);
+
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("icon.png"));
+		setIconImage(icon.getImage());
+		setTitle("AirTask");
+		HotwordDetector.getInstance().addListener(this);
+
 		pack();
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -178,8 +169,11 @@ public class SpeechRecognizer extends JFrame implements VoiceTransactionListener
 
 	@Override
 	public void windowClosing(WindowEvent e) {
+		HotwordDetector.getInstance().removeListener(this);
 		if (currentTransaction != null)
 			currentTransaction.stop();
+		if (closeListener != null)
+			closeListener.onClose();
 	}
 
 	@Override
@@ -200,5 +194,10 @@ public class SpeechRecognizer extends JFrame implements VoiceTransactionListener
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
+	}
+
+	@Override
+	public void onHotwordSpoken() {
+		micClicked();
 	}
 }

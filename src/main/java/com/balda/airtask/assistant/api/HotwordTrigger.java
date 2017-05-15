@@ -17,10 +17,8 @@
  * along with AirTask Desktop.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.balda.airtask.channels;
+package com.balda.airtask.assistant.api;
 
-public interface AuthorizationServer {
-	void setCurrentState(String state);
-
-	int getPort();
+public interface HotwordTrigger {
+	void onHotwordSpoken();
 }

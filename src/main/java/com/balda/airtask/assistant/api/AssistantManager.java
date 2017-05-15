@@ -19,17 +19,25 @@
 
 package com.balda.airtask.assistant.api;
 
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
+
 import com.balda.airtask.assistant.audio.AudioPlayer;
 import com.balda.airtask.assistant.audio.AudioRecorder;
 import com.balda.airtask.assistant.authentication.AuthorizationHelper;
+import com.balda.airtask.settings.AssistantSettings;
+import com.balda.airtask.ui.SpeechRecognizer;
+import com.balda.airtask.ui.WindowClosedListener;
 
-public class AssistantManager {
+public class AssistantManager implements PreferenceChangeListener, HotwordTrigger, WindowClosedListener {
 
 	private AudioPlayer player;
 	private AudioRecorder recorder;
 	private AssistantClient client;
 	private AuthorizationHelper helper;
+	private boolean credChanged = false;
 	public static final AssistantManager instance = new AssistantManager();
+	private SpeechRecognizer speechRecognizer;
 
 	private AssistantManager() {
 		player = new AudioPlayer();
@@ -42,24 +50,73 @@ public class AssistantManager {
 	}
 
 	public void init() {
+		AssistantSettings.getInstance().addListener(this);
+		boolean authOk = false;
 		try {
 			helper = new AuthorizationHelper();
-			helper.authorize();
+			authOk = helper.authorize();
+			if (!authOk)
+				authOk = helper.refreshIfNeeededd();
 		} catch (Exception e) {
-			e.printStackTrace();
+			authOk = false;
 			return;
 		}
-		// Build the client (stub)
-		client = new AssistantClient(helper.getOAuthCredentials());
+		if (authOk && helper.getOAuthCredentials() != null)
+			// Build the client (stub)
+			client = new AssistantClient(helper.getOAuthCredentials());
+		HotwordDetector.getInstance().addListener(this);
+		if (AssistantSettings.getInstance().isAlwaysOn())
+			HotwordDetector.getInstance().start();
+	}
+
+	public void shutdown() {
+		HotwordDetector.getInstance().stop();
+	}
+
+	public void createSpeechReconizer() {
+		if (speechRecognizer == null) {
+			speechRecognizer = new SpeechRecognizer(this);
+			speechRecognizer.setVisible(true);
+		}
 	}
 
 	public VoiceTransaction createTransaction(VoiceTransactionListener l) throws Exception {
 		if (helper == null)
 			return null;
 		boolean state = helper.refreshIfNeeededd();
-		if (state)
+		if (state) {
+			if (credChanged || client == null) {
+				client = new AssistantClient(helper.getOAuthCredentials());
+			}
 			return new VoiceTransaction(client, player, recorder, l);
-		else
+		} else
 			return null;
+	}
+
+	@Override
+	public void preferenceChange(PreferenceChangeEvent evt) {
+		switch (evt.getKey()) {
+		case AssistantSettings.CLIENT_ID:
+			credChanged = true;
+			break;
+		case AssistantSettings.CLIENT_SECRET:
+			credChanged = true;
+			break;
+		case AssistantSettings.ALWAYS_ON:
+			if (AssistantSettings.getInstance().isAlwaysOn())
+				HotwordDetector.getInstance().start();
+			else
+				HotwordDetector.getInstance().stop();
+		}
+	}
+
+	@Override
+	public void onHotwordSpoken() {
+		createSpeechReconizer();
+	}
+
+	@Override
+	public void onClose() {
+		speechRecognizer = null;
 	}
 }
