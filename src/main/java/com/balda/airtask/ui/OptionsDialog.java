@@ -75,6 +75,7 @@ public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 	private JCheckBox chckbxNewCheckBox;
 	private DefaultListModel<Device> listModel;
 	private DefaultListModel<NotificationFilter> filterModel;
+	private List<Device> devices;
 
 	private class DeviceRenderer extends JLabel implements ListCellRenderer<Device> {
 		/**
@@ -358,8 +359,8 @@ public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 		clipboardPrefixField.setText(s.getClipboardPrefix());
 		pcNameField.setText(s.getName());
 
-		List<Device> list = s.getDevices();
-		for (Device d : list) {
+		devices = s.getDevices();
+		for (Device d : devices) {
 			listModel.addElement(d);
 		}
 		List<NotificationFilter> filters = s.getFilters();
@@ -369,8 +370,6 @@ public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 	}
 
 	private void setAsDefault(Device d) {
-		Settings s = Settings.getInstance();
-		List<Device> devices = s.getDevices();
 		listModel.clear();
 		for (Device dev : devices) {
 			if (dev.equals(d))
@@ -434,7 +433,7 @@ public class OptionsDialog extends JDialog implements PreferenceChangeListener {
 	public void preferenceChange(PreferenceChangeEvent evt) {
 		if (evt.getKey().startsWith(Settings.DEVICES)) {
 			listModel.removeAllElements();
-			List<Device> devices = Settings.getInstance().getDevices();
+			devices = Settings.getInstance().getDevices();
 			for (Device d : devices) {
 				listModel.addElement(d);
 			}
