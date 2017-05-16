@@ -36,6 +36,8 @@ public class HotwordDetector {
 	private List<HotwordTrigger> listeners = new LinkedList<>();
 	private LiveSpeechRecognizer recognizer;
 	private volatile boolean quit;
+	private boolean permanent;
+	private boolean running;
 
 	private HotwordDetector() {
 		Logger cmRootLogger = Logger.getLogger("default.config");
@@ -53,6 +55,8 @@ public class HotwordDetector {
 		configuration.setGrammarPath("resource:/com/balda/airtask/assistant/api/");
 		configuration.setUseGrammar(true);
 		configuration.setGrammarName("hotword");
+		permanent = false;
+		running = false;
 
 		try {
 			recognizer = new LiveSpeechRecognizer(configuration);
@@ -74,7 +78,17 @@ public class HotwordDetector {
 		listeners.remove(t);
 	}
 
-	public void start() {
+	/**
+	 * Start the service
+	 * 
+	 * @param p
+	 *            True for always-on, false only on-demand
+	 */
+	public void start(boolean p) {
+		if (!permanent)
+			permanent = p;
+		if (running)
+			return;
 		quit = false;
 		Thread t = new Thread() {
 			@Override
@@ -98,9 +112,21 @@ public class HotwordDetector {
 			}
 		};
 		t.start();
+		running = false;
 	}
 
+	/**
+	 * Stop the listening only if the service wasn't permanent
+	 */
 	public void stop() {
+		if (!permanent)
+			quit = true;
+	}
+
+	/**
+	 * Stop the service regardless if it was permanent or not
+	 */
+	public void kill() {
 		quit = true;
 	}
 }

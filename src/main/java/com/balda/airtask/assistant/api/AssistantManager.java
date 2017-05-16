@@ -66,11 +66,11 @@ public class AssistantManager implements PreferenceChangeListener, HotwordTrigge
 			client = new AssistantClient(helper.getOAuthCredentials());
 		HotwordDetector.getInstance().addListener(this);
 		if (AssistantSettings.getInstance().isAlwaysOn())
-			HotwordDetector.getInstance().start();
+			HotwordDetector.getInstance().start(true);
 	}
 
 	public void shutdown() {
-		HotwordDetector.getInstance().stop();
+		HotwordDetector.getInstance().kill();
 	}
 
 	public void createSpeechReconizer() {
@@ -104,9 +104,9 @@ public class AssistantManager implements PreferenceChangeListener, HotwordTrigge
 			break;
 		case AssistantSettings.ALWAYS_ON:
 			if (AssistantSettings.getInstance().isAlwaysOn())
-				HotwordDetector.getInstance().start();
+				HotwordDetector.getInstance().start(true);
 			else
-				HotwordDetector.getInstance().stop();
+				HotwordDetector.getInstance().kill();
 		}
 	}
 

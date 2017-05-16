@@ -133,7 +133,8 @@ public class SpeechRecognizer extends JFrame implements VoiceTransactionListener
 
 	@Override
 	public void onClose() {
-		talkStatus.setText("Press mic to talk again");
+		HotwordDetector.getInstance().start(false);
+		talkStatus.setText("Press mic to talk again or say Ok Google");
 		currentTransaction = null;
 		micLabel.setIcon(new ImageIcon(
 				Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("micOff.png"))));
@@ -148,7 +149,8 @@ public class SpeechRecognizer extends JFrame implements VoiceTransactionListener
 
 	@Override
 	public void onError(String error) {
-		talkStatus.setText("Press mic to talk");
+		HotwordDetector.getInstance().start(false);
+		talkStatus.setText("Press mic to talk again or say Ok Google");
 		micLabel.setIcon(new ImageIcon(
 				Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("micOff.png"))));
 		JOptionPane.showMessageDialog(this, "Error: " + error, "AirTask", JOptionPane.ERROR_MESSAGE);
@@ -170,6 +172,7 @@ public class SpeechRecognizer extends JFrame implements VoiceTransactionListener
 	@Override
 	public void windowClosing(WindowEvent e) {
 		HotwordDetector.getInstance().removeListener(this);
+		HotwordDetector.getInstance().stop();
 		if (currentTransaction != null)
 			currentTransaction.stop();
 		if (closeListener != null)
