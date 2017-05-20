@@ -35,9 +35,8 @@ public class HotwordDetector {
 	private static final HotwordDetector instance = new HotwordDetector();
 	private List<HotwordTrigger> listeners = new LinkedList<>();
 	private LiveSpeechRecognizer recognizer;
-	private volatile boolean quit;
 	private boolean permanent;
-	private boolean running;
+	private volatile boolean running;
 
 	private HotwordDetector() {
 		Logger cmRootLogger = Logger.getLogger("default.config");
@@ -89,12 +88,12 @@ public class HotwordDetector {
 			permanent = p;
 		if (running)
 			return;
-		quit = false;
+		running = true;
 		Thread t = new Thread() {
 			@Override
 			public void run() {
 				recognizer.startRecognition(true);
-				while (!quit) {
+				while (running) {
 					SpeechResult result = recognizer.getResult();
 					String text = result.getHypothesis();
 					if (!text.isEmpty() && text.equalsIgnoreCase("ok google")) {
@@ -112,21 +111,21 @@ public class HotwordDetector {
 			}
 		};
 		t.start();
-		running = false;
 	}
 
 	/**
 	 * Stop the listening only if the service wasn't permanent
 	 */
 	public void stop() {
-		if (!permanent)
-			quit = true;
+		if (!permanent) {
+			running = false;
+		}
 	}
 
 	/**
 	 * Stop the service regardless if it was permanent or not
 	 */
 	public void kill() {
-		quit = true;
+		running = false;
 	}
 }
